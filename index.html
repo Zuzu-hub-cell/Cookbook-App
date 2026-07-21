@@ -10,6 +10,8 @@
   <link rel="manifest" href="manifest.json" id="main-manifest">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">
     try {
@@ -628,6 +630,31 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const recipesRef = db.ref("recipes");
+
+recipesRef.on("value", (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    recipes = Object.keys(data).map(key => ({
+      ...data[key],
+      id: key
+    }));
+  } else {
+    recipes = defaultRecipes;
+    uploadDefaultRecipes();
+  }
+  
+  renderCategoryTags();
+  renderRecipes();
+});
+    
+function uploadDefaultRecipes() {
+  defaultRecipes.forEach(r => {
+    recipesRef.child(r.id).set(r);
+  });
+}
     
     const firebaseConfig = {
       apiKey: "AIzaSyCZSj0CQc_V7LuqUurXOJndNGZwdSK8OlI",
@@ -1752,42 +1779,32 @@
       if (editId) {
         // EDIT MODE
         const recipeIdx = recipes.findIndex(r => r.id === editId);
-        if (recipeIdx !== -1) {
-          recipes[recipeIdx] = {
-            ...recipes[recipeIdx],
-            title,
-            category,
-            time,
-            servings,
-            image: uploadedImageBase64 || recipes[recipeIdx].image || defaultImg,
-            ingredients: ingredients.length ? ingredients : recipes[recipeIdx].ingredients,
-            steps: steps.length ? steps : recipes[recipeIdx].steps
-          };
-        }
+        const recipeData = {
+        title,
+        category,
+        tags: [`#${category}`, "#手作料理"],
+        time,
+        likes: 1,
+        servings,
+        difficulty: "簡單",
+        image: uploadedImageBase64 || defaultImg,
+        ingredients: ingredients.length ? ingredients : [{ name: "新鮮食材", amount: "適量" }],
+        steps: steps.length ? steps : ["按照食材備料並開火烹煮至熟透。"]
+      };
+
+      if (editId) {
+        // 修改：更新 Firebase 雲端資料
+        recipesRef.child(editId).update(recipeData);
       } else {
-        // NEW RECIPE
-        const newRecipe = {
-          id: "custom_" + Date.now(),
-          title,
-          category,
-          tags: [`#${category}`, "#手作料理"],
-          time,
-          likes: 1,
-          servings,
-          difficulty: "簡單",
-          image: uploadedImageBase64 || defaultImg,
-          ingredients: ingredients.length ? ingredients : [{ name: "新鮮食材", amount: "適量" }],
-          steps: steps.length ? steps : ["按照食材備料並開火烹煮至熟透。"]
-        };
-        recipes.unshift(newRecipe);
+        // 新增：寫入 Firebase 生成新 key 並儲存
+        const newRef = recipesRef.push();
+        recipeData.id = newRef.key;
+        newRef.set(recipeData);
       }
 
-      localStorage.setItem("warm_kitchen_recipes", JSON.stringify(recipes));
-      renderRecipes();
       closeAddModal();
       document.getElementById("add-recipe-form").reset();
-      alert(editId ? "✏️ 食譜已成功修改更新！" : "🎉 私房食譜已成功新增！");
-    }
+      alert(editId ? "✏️ 食譜已成功修改並同步！" : "🎉 私房食譜已成功新增並同步！");    }
 
     // VOICE SEARCH SIMULATION
     function openMicVoiceSearch() {
