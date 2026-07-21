@@ -10,8 +10,11 @@
   <link rel="manifest" href="manifest.json" id="main-manifest">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK (Compat 模式) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">
     try {
@@ -151,13 +154,10 @@
 
     <!-- TAB 1: HOME -->
     <div id="tab-home-content" class="flex flex-col gap-lg">
-      
-      <!-- Search Bar & Switch to Fridge Clear -->
       <section class="flex flex-col gap-md">
         <div class="relative w-full shadow-ambient rounded-full bg-surface-container-lowest border border-secondary-container/60 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary-container/50 transition-all">
           <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline">search</span>
           <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="尋找靈感... 例如「意粉」、「氣炸鍋」或食材名" class="w-full h-14 pl-14 pr-28 rounded-full bg-transparent border-none focus:ring-0 text-base text-on-surface placeholder-outline-variant outline-none">
-          
           <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
             <button onclick="clearSearch()" id="clear-search-btn" class="hidden w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant flex items-center justify-center transition-colors mr-1">
               <span class="material-symbols-outlined text-[18px]">close</span>
@@ -168,15 +168,11 @@
           </div>
         </div>
 
-        <!-- Custom Tags Carousel -->
         <div class="flex items-center justify-between gap-2">
-          <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 pt-1 -mx-container-margin px-container-margin md:mx-0 md:px-0 w-full" id="tag-filters">
-            <!-- Dynamic category tags -->
-          </div>
+          <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 pt-1 -mx-container-margin px-container-margin md:mx-0 md:px-0 w-full" id="tag-filters"></div>
         </div>
       </section>
 
-      <!-- Recipe Grid Header -->
       <div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
@@ -192,13 +188,10 @@
         </div>
       </div>
 
-      <!-- Bento Grid Recipes Container -->
-      <section id="recipe-grid" class="grid grid-cols-1 md:grid-cols-3 gap-md min-h-[300px]">
-        <!-- Cards rendered via JS -->
-      </section>
+      <section id="recipe-grid" class="grid grid-cols-1 md:grid-cols-3 gap-md min-h-[300px]"></section>
     </div>
 
-    <!-- TAB 2: SMART FRIDGE CLEARANCE (清冰箱智慧搜尋) -->
+    <!-- TAB 2: SMART FRIDGE CLEARANCE -->
     <div id="tab-fridge-content" class="hidden flex-col gap-lg">
       <div class="bg-gradient-to-r from-secondary-container/60 via-primary-container/50 to-surface-container p-6 md:p-8 rounded-3xl border border-secondary-container/60 flex flex-col gap-4">
         <div class="flex items-center gap-3">
@@ -221,7 +214,6 @@
           </button>
         </div>
 
-        <!-- Quick Ingredient Badges -->
         <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-secondary-container/30">
           <span class="text-xs text-on-surface-variant font-medium">常見剩餘食材快速點選：</span>
           <button onclick="addFridgeChip('西蘭花')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 西蘭花</button>
@@ -233,7 +225,6 @@
         </div>
       </div>
 
-      <!-- Results Grid -->
       <div id="fridge-results-header" class="hidden items-center justify-between border-b border-surface-container-high pb-2">
         <h3 class="font-bold text-lg text-on-surface">清冰箱食譜推薦結果</h3>
         <span id="fridge-match-count" class="text-xs font-semibold text-primary bg-primary-container/50 px-3 py-1 rounded-full">找到 0 道可消耗食譜</span>
@@ -248,7 +239,7 @@
       </div>
     </div>
 
-    <!-- TAB 3: SMART SHOPPING LIST (智慧購物清單) -->
+    <!-- TAB 3: SMART SHOPPING LIST -->
     <div id="tab-shopping-content" class="hidden flex-col gap-lg">
       <div class="bg-surface-container-low p-6 md:p-8 rounded-3xl border border-secondary-container/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -258,7 +249,6 @@
           </div>
           <p class="text-xs md:text-sm text-on-surface-variant mt-1">已將選定食譜的食材自動歸類（蔬菜、肉類、調味品），街市或超市一次補齊不漏買。</p>
         </div>
-        
         <div class="flex items-center gap-2">
           <button onclick="copyShoppingListText()" class="bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-secondary-container px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-all">
             <span class="material-symbols-outlined text-[16px]">content_copy</span> 複製文字
@@ -269,18 +259,12 @@
         </div>
       </div>
 
-      <!-- Selected Recipes Pills -->
       <div class="flex flex-col gap-2">
         <h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">已選採購食譜：</h3>
-        <div id="shopping-recipes-pills" class="flex flex-wrap gap-2">
-          <!-- Rendered dynamically -->
-        </div>
+        <div id="shopping-recipes-pills" class="flex flex-wrap gap-2"></div>
       </div>
 
-      <!-- Categorized Shopping List Grid -->
-      <div id="shopping-categories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
-        <!-- Rendered categories -->
-      </div>
+      <div id="shopping-categories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md"></div>
     </div>
 
     <!-- TAB 4: FAVORITES -->
@@ -295,9 +279,7 @@
         </button>
       </div>
 
-      <div id="favorites-grid" class="grid grid-cols-1 md:grid-cols-3 gap-md">
-        <!-- Favorite Cards rendered via JS -->
-      </div>
+      <div id="favorites-grid" class="grid grid-cols-1 md:grid-cols-3 gap-md"></div>
     </div>
 
   </main>
@@ -329,38 +311,27 @@
   <!-- RECIPE DETAIL MODAL -->
   <div id="recipe-modal" class="fixed inset-0 z-50 bg-on-background/50 backdrop-blur-sm hidden items-center justify-center p-3 md:p-6 overflow-y-auto">
     <div class="bg-surface-container-lowest rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-ambient-lg border border-secondary-container/50 flex flex-col relative my-auto">
-      
-      <!-- Sticky Modal Top Actions -->
       <div class="sticky top-0 z-20 flex items-center justify-between px-6 py-4 bg-surface-container-lowest/90 backdrop-blur-md border-b border-surface-container-high">
         <div class="flex items-center gap-2">
           <span id="modal-category-badge" class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-lg font-medium text-xs">標籤</span>
         </div>
         <div class="flex items-center gap-2">
-          <!-- Add to Shopping List Button -->
           <button id="modal-cart-btn" onclick="toggleCartFromModal()" class="px-3.5 py-2 rounded-full bg-primary-container text-on-primary-container hover:bg-primary-container/80 text-xs font-semibold flex items-center gap-1.5 transition-all">
             <span class="material-symbols-outlined text-base">add_shopping_cart</span> 購物清單
           </button>
-          
-          <!-- Edit Recipe Button -->
           <button onclick="openEditRecipeModal()" title="修改/編輯食譜" class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors">
             <span class="material-symbols-outlined text-xl">edit</span>
           </button>
-
-          <!-- Favorite Button -->
           <button id="modal-fav-btn" onclick="toggleModalFavorite()" class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-primary flex items-center justify-center transition-colors">
             <span class="material-symbols-outlined text-xl" id="modal-fav-icon">favorite_border</span>
           </button>
-          
-          <!-- Close Modal Button -->
           <button onclick="closeModal()" class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors">
             <span class="material-symbols-outlined text-xl">close</span>
           </button>
         </div>
       </div>
 
-      <!-- Modal Body Content -->
       <div class="p-6 md:p-8 flex flex-col gap-6">
-        <!-- Hero Header -->
         <div class="relative rounded-2xl overflow-hidden h-64 md:h-80 shadow-sm group">
           <img id="modal-image" src="" alt="" class="w-full h-full object-cover">
           <div class="absolute inset-0 bg-gradient-to-t from-on-background/80 via-on-background/20 to-transparent"></div>
@@ -369,7 +340,6 @@
           </div>
         </div>
 
-        <!-- Meta Info Bar & Dynamic Portion Control -->
         <div class="flex flex-col gap-3 bg-surface-container-low p-4 rounded-2xl border border-secondary-container/30">
           <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-center">
             <div>
@@ -388,7 +358,6 @@
             </div>
           </div>
 
-          <!-- Dynamic Portion Adjuster Button Group -->
           <div class="border-t border-surface-container-high/60 pt-3 flex items-center justify-between flex-wrap gap-2">
             <span class="text-xs font-semibold text-primary flex items-center gap-1">
               <span class="material-symbols-outlined text-base">groups</span> 份量縮放：
@@ -402,7 +371,6 @@
           </div>
         </div>
 
-        <!-- Hands-Free CTA Bar -->
         <div class="bg-gradient-to-r from-primary-container/80 to-secondary-container/80 p-4 rounded-2xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center shadow-xs">
@@ -418,7 +386,6 @@
           </button>
         </div>
 
-        <!-- Ingredients Section -->
         <div class="flex flex-col gap-3">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-lg text-on-surface flex items-center gap-2">
@@ -427,22 +394,16 @@
             </h3>
             <span class="text-xs text-outline font-medium">點擊勾選以記錄備料</span>
           </div>
-          <div id="modal-ingredients-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-surface-container-low/50 p-4 rounded-2xl border border-secondary-container/20">
-            <!-- Rendered ingredients with dynamic portion amounts -->
-          </div>
+          <div id="modal-ingredients-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-surface-container-low/50 p-4 rounded-2xl border border-secondary-container/20"></div>
         </div>
 
-        <!-- Steps Section -->
         <div class="flex flex-col gap-4">
           <h3 class="font-bold text-lg text-on-surface flex items-center gap-2">
             <span class="material-symbols-outlined text-primary">skillet</span> 烹飪步驟說明
           </h3>
-          <div id="modal-steps-list" class="flex flex-col gap-3">
-            <!-- Rendered steps -->
-          </div>
+          <div id="modal-steps-list" class="flex flex-col gap-3"></div>
         </div>
 
-        <!-- Personal Cook Notes Section -->
         <div class="flex flex-col gap-3 bg-surface-container-low/60 p-5 rounded-2xl border border-secondary-container/30">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-lg text-on-surface flex items-center gap-2">
@@ -450,13 +411,7 @@
             </h3>
             <span class="text-xs text-outline font-medium" id="notes-count-badge">0 條筆記</span>
           </div>
-
-          <!-- Existing Notes List -->
-          <div id="modal-notes-list" class="flex flex-col gap-2">
-            <!-- Rendered notes -->
-          </div>
-
-          <!-- Add Note Input Area -->
+          <div id="modal-notes-list" class="flex flex-col gap-2"></div>
           <div class="flex gap-2 mt-1">
             <input type="text" id="new-note-input" placeholder="記錄烹飪心得或調整備忘（例如：上次鹹度減半、氣炸多加2分鐘...）" class="flex-grow rounded-xl bg-surface-container-lowest border border-secondary-container/50 px-3.5 py-2 text-xs md:text-sm focus:ring-2 focus:ring-primary outline-none" onkeyup="if(event.key==='Enter') saveRecipeNote()">
             <button onclick="saveRecipeNote()" class="bg-primary text-on-primary hover:bg-primary/90 text-xs font-semibold px-4 py-2 rounded-xl transition-all shrink-0 active:scale-95 flex items-center gap-1 shadow-xs">
@@ -464,7 +419,6 @@
             </button>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -485,12 +439,8 @@
     </div>
 
     <div class="flex-grow flex flex-col justify-center items-center px-6 md:px-16 py-8 text-center max-w-4xl mx-auto w-full">
-      <div class="w-16 h-16 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center text-2xl font-bold mb-6 shadow-sm" id="hf-step-badge">
-        1
-      </div>
-      <p id="hf-step-text" class="text-2xl md:text-3xl font-medium leading-relaxed text-on-surface tracking-wide mb-8">
-        載入中...
-      </p>
+      <div class="w-16 h-16 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center text-2xl font-bold mb-6 shadow-sm" id="hf-step-badge">1</div>
+      <p id="hf-step-text" class="text-2xl md:text-3xl font-medium leading-relaxed text-on-surface tracking-wide mb-8">載入中...</p>
 
       <div class="flex flex-wrap items-center justify-center gap-4 my-4">
         <button onclick="speakCurrentStep()" class="bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 px-5 py-3 rounded-full font-semibold text-sm flex items-center gap-2 shadow-xs active:scale-95 transition-all">
@@ -500,9 +450,7 @@
         <div class="flex items-center gap-2 bg-surface-container-high px-4 py-2.5 rounded-full">
           <span class="material-symbols-outlined text-primary">timer</span>
           <span id="timer-display" class="font-mono font-bold text-lg text-on-surface min-w-[60px]">03:00</span>
-          <button onclick="toggleTimer()" id="timer-toggle-btn" class="bg-primary text-on-primary text-xs px-3 py-1 rounded-full font-medium ml-1">
-            開始
-          </button>
+          <button onclick="toggleTimer()" id="timer-toggle-btn" class="bg-primary text-on-primary text-xs px-3 py-1 rounded-full font-medium ml-1">開始</button>
           <button onclick="resetTimer()" class="text-on-surface-variant text-xs hover:text-primary">重置</button>
         </div>
       </div>
@@ -512,16 +460,14 @@
       <button onclick="prevStep()" id="hf-prev-btn" class="px-6 py-3 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold text-sm flex items-center gap-2 disabled:opacity-40">
         <span class="material-symbols-outlined">arrow_back</span> 上一步
       </button>
-
       <div class="flex gap-1" id="hf-dots"></div>
-
       <button onclick="nextStep()" id="hf-next-btn" class="px-6 py-3 rounded-full bg-primary text-on-primary hover:bg-primary/90 font-semibold text-sm flex items-center gap-2 shadow-sm active:scale-95">
         下一步 <span class="material-symbols-outlined">arrow_forward</span>
       </button>
     </div>
   </div>
 
-  <!-- ADD / EDIT RECIPE MODAL (Removed Short Description, Added Image Upload & Voice STT) -->
+  <!-- ADD / EDIT RECIPE MODAL -->
   <div id="add-modal" class="fixed inset-0 z-50 bg-on-background/50 backdrop-blur-sm hidden items-center justify-center p-3 md:p-6 overflow-y-auto">
     <div class="bg-surface-container-lowest rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-ambient-lg border border-secondary-container/50 flex flex-col p-6 md:p-8 relative my-auto">
       <div class="flex items-center justify-between border-b border-surface-container-high pb-4 mb-6">
@@ -534,16 +480,13 @@
       </div>
 
       <form id="add-recipe-form" onsubmit="saveCustomRecipe(event)" class="flex flex-col gap-4">
-        <!-- Hidden input for Edit Mode ID -->
         <input type="hidden" id="edit-recipe-id" value="">
 
-        <!-- Title Input -->
         <div>
           <label class="block text-xs font-semibold text-on-surface-variant mb-1">食譜名稱 *</label>
           <input type="text" id="add-title" required placeholder="例如：西蘭花炒蒜香雞肉" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
         </div>
 
-        <!-- Photo Capture / Image Upload -->
         <div>
           <label class="block text-xs font-semibold text-on-surface-variant mb-1">食譜照片（可上傳或拍照）</label>
           <div class="flex items-center gap-4">
@@ -562,7 +505,6 @@
           </div>
         </div>
 
-        <!-- Category & Time & Base Servings -->
         <div class="grid grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-semibold text-on-surface-variant mb-1">主要類別</label>
@@ -586,7 +528,6 @@
           </div>
         </div>
 
-        <!-- Ingredients Section with Voice STT -->
         <div>
           <div class="flex items-center justify-between mb-1">
             <label class="block text-xs font-semibold text-on-surface-variant">食材清單 (以逗號或換行分開) *</label>
@@ -598,7 +539,6 @@
           <p id="stt-status" class="hidden text-[11px] text-primary mt-1 font-medium animate-pulse">正在聆聽... 請讀出食材用量</p>
         </div>
 
-        <!-- Cooking Steps -->
         <div>
           <label class="block text-xs font-semibold text-on-surface-variant mb-1">烹飪步驟 (每行步驟請換行) *</label>
           <textarea id="add-steps" rows="4" required placeholder="步驟一：西蘭花切小朵洗淨，雞肉切塊備用&#10;步驟二：熱鍋爆香蒜片，加入雞肉炒至變色&#10;步驟三：加入西蘭花與鹽快炒至熟透即可" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary outline-none"></textarea>
@@ -630,32 +570,7 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const recipesRef = db.ref("recipes");
-
-recipesRef.on("value", (snapshot) => {
-  const data = snapshot.val();
-  if (data) {
-    recipes = Object.keys(data).map(key => ({
-      ...data[key],
-      id: key
-    }));
-  } else {
-    recipes = defaultRecipes;
-    uploadDefaultRecipes();
-  }
-  
-  renderCategoryTags();
-  renderRecipes();
-});
-    
-function uploadDefaultRecipes() {
-  defaultRecipes.forEach(r => {
-    recipesRef.child(r.id).set(r);
-  });
-}
-    
+    // 1. Firebase 配置與初始化
     const firebaseConfig = {
       apiKey: "AIzaSyCZSj0CQc_V7LuqUurXOJndNGZwdSK8OlI",
       authDomain: "zuzu-travel-564a8.firebaseapp.com",
@@ -665,7 +580,12 @@ function uploadDefaultRecipes() {
       appId: "1:855878475262:web:96079b08b653e02e7634af",
       measurementId: "G-SHQPN4W8V7"
     };
-    // INITIAL RECIPE DATA STORE
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const recipesRef = db.ref("recipes");
+
+    // 2. 預設食譜資料
     const defaultRecipes = [
       {
         id: "r1",
@@ -794,31 +714,49 @@ function uploadDefaultRecipes() {
       }
     ];
 
-    // STATE VARIABLES
+    // 3. 狀態變數
     let recipes = [];
     let favorites = new Set();
     let shoppingListRecipeIds = new Set();
-    let recipeNotes = {}; // recipeId -> Array of { id, text, date }
+    let recipeNotes = {};
     let selectedCategory = "全部";
     let searchQuery = "";
     let sortOption = "default";
     let activeRecipe = null;
-    let currentPortion = 2; // Dynamic Portion current selected
+    let currentPortion = 2;
     let currentHandsFreeStep = 0;
     let uploadedImageBase64 = "";
 
-    // TIMER STATE
     let timerInterval = null;
     let timerSeconds = 180;
     let isTimerRunning = false;
 
     const categories = ["全部", "餸菜", "飯", "麵", "湯", "粥", "麵包", "甜品"];
 
-    // INITIALIZATION
-    window.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("warm_kitchen_recipes");
-      recipes = saved ? JSON.parse(saved) : defaultRecipes;
+    // 4. 監聽 Firebase 雲端資料（跨裝置即時同步的核心）
+    recipesRef.on("value", (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        recipes = Object.keys(data).map(key => ({
+          ...data[key],
+          id: key
+        }));
+      } else {
+        recipes = defaultRecipes;
+        uploadDefaultRecipes();
+      }
+      renderCategoryTags();
+      renderRecipes();
+    });
 
+    function uploadDefaultRecipes() {
+      defaultRecipes.forEach(r => {
+        recipesRef.child(r.id).set(r);
+      });
+    }
+
+    // 5. 初始化本地記錄 (收藏與購物車)
+    window.addEventListener("DOMContentLoaded", () => {
       const savedFavs = localStorage.getItem("warm_kitchen_favs");
       if (savedFavs) favorites = new Set(JSON.parse(savedFavs));
 
@@ -828,13 +766,11 @@ function uploadDefaultRecipes() {
       const savedNotes = localStorage.getItem("warm_kitchen_notes");
       if (savedNotes) recipeNotes = JSON.parse(savedNotes);
 
-      renderCategoryTags();
-      renderRecipes();
       updateFavCount();
       updateCartBadge();
     });
 
-    // RENDER CATEGORY TAGS
+    // 6. UI Render Functions
     function renderCategoryTags() {
       const container = document.getElementById("tag-filters");
       container.innerHTML = categories.map(cat => {
@@ -864,14 +800,13 @@ function uploadDefaultRecipes() {
       }
     }
 
-    // SEARCH & FILTER LOGIC
     function getFilteredRecipes() {
       let result = recipes.filter(r => {
         const matchesCategory = selectedCategory === "全部" || r.category === selectedCategory;
         const matchesQuery = !searchQuery || 
           r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          r.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          r.ingredients.some(i => i.name.toLowerCase().includes(searchQuery.toLowerCase()));
+          (r.tags && r.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()))) ||
+          (r.ingredients && r.ingredients.some(i => i.name.toLowerCase().includes(searchQuery.toLowerCase())));
         return matchesCategory && matchesQuery;
       });
 
@@ -880,7 +815,6 @@ function uploadDefaultRecipes() {
       return result;
     }
 
-    // RENDER MAIN RECIPE BENTO GRID
     function renderRecipes() {
       const grid = document.getElementById("recipe-grid");
       const filtered = getFilteredRecipes();
@@ -909,7 +843,7 @@ function uploadDefaultRecipes() {
             <div class="absolute inset-0 bg-gradient-to-t from-on-background/85 via-on-background/20 to-transparent"></div>
             
             <div class="absolute top-4 left-4 flex flex-wrap gap-1.5">
-              ${r.tags.map(t => `<span class="px-2.5 py-1 bg-secondary-container/90 backdrop-blur-md text-on-secondary-container rounded-lg font-medium text-xs shadow-xs">${t}</span>`).join('')}
+              ${(r.tags || []).map(t => `<span class="px-2.5 py-1 bg-secondary-container/90 backdrop-blur-md text-on-secondary-container rounded-lg font-medium text-xs shadow-xs">${t}</span>`).join('')}
             </div>
 
             <div class="absolute top-4 right-4 flex items-center gap-2">
@@ -933,7 +867,7 @@ function uploadDefaultRecipes() {
       }).join('');
     }
 
-    // TAB 2: SMART FRIDGE CLEARANCE SEARCH
+    // 7. 清冰箱搜尋邏輯
     function addFridgeChip(name) {
       const input = document.getElementById("fridge-ingredients-input");
       const current = input.value.trim();
@@ -962,9 +896,8 @@ function uploadDefaultRecipes() {
         return;
       }
 
-      // Calculate matches for each recipe
       const matches = recipes.map(recipe => {
-        const recipeIngs = recipe.ingredients.map(i => i.name.toLowerCase());
+        const recipeIngs = (recipe.ingredients || []).map(i => i.name.toLowerCase());
         let matchedCount = 0;
         const matchedList = [];
         const missingList = [];
@@ -1012,21 +945,16 @@ function uploadDefaultRecipes() {
               </div>
               <div class="p-5">
                 <h3 class="font-bold text-lg text-on-surface mb-2">${r.title}</h3>
-                
-                <!-- Matched Ingredients -->
                 <div class="flex flex-wrap gap-1.5 mb-2">
                   <span class="text-xs font-semibold text-primary">已有食材：</span>
                   ${m.matchedList.map(i => `<span class="px-2 py-0.5 bg-tertiary-container/80 text-on-tertiary-container rounded-md text-[11px] font-medium">✓ ${i}</span>`).join('')}
                 </div>
-
-                <!-- Missing Ingredients -->
                 <div class="flex flex-wrap gap-1.5 text-xs text-on-surface-variant/80">
                   <span class="text-xs font-semibold text-outline">需補材料：</span>
                   <span class="line-clamp-1">${m.missingList.slice(0, 3).join(', ')}${m.missingList.length > 3 ? '...' : ''}</span>
                 </div>
               </div>
             </div>
-
             <div class="p-4 bg-surface-container-low/50 border-t border-surface-container-high/40 flex items-center justify-between text-xs font-medium text-primary">
               <span>烹飪時間: ${r.time} 分鐘</span>
               <span class="flex items-center gap-1">查看做法 <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
@@ -1036,7 +964,7 @@ function uploadDefaultRecipes() {
       }).join('');
     }
 
-    // TAB 3: SMART SHOPPING LIST (智慧購物清單)
+    // 8. 智慧購物清單邏輯
     function toggleCartFromCard(e, id) {
       e.stopPropagation();
       if (shoppingListRecipeIds.has(id)) {
@@ -1103,7 +1031,6 @@ function uploadDefaultRecipes() {
         return;
       }
 
-      // Render Selected Recipe Pills
       recipesPillsContainer.innerHTML = selectedRecipes.map(r => `
         <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-xs">
           ${r.title}
@@ -1113,7 +1040,6 @@ function uploadDefaultRecipes() {
         </span>
       `).join('');
 
-      // Aggregate Ingredients & Categorize
       const categorized = {
         veg: { name: "🥬 蔬菜水果類", items: [] },
         meat: { name: "🥩 肉類海鮮類", items: [] },
@@ -1122,7 +1048,7 @@ function uploadDefaultRecipes() {
       };
 
       selectedRecipes.forEach(r => {
-        r.ingredients.forEach(ing => {
+        (r.ingredients || []).forEach(ing => {
           const catKey = classifyIngredientCategory(ing.name);
           categorized[catKey].items.push({
             name: ing.name,
@@ -1132,7 +1058,6 @@ function uploadDefaultRecipes() {
         });
       });
 
-      // Render Categorized Grid
       categoryContainer.innerHTML = Object.keys(categorized).map(key => {
         const cat = categorized[key];
         if (cat.items.length === 0) return '';
@@ -1143,9 +1068,8 @@ function uploadDefaultRecipes() {
               <span>${cat.name}</span>
               <span class="text-xs font-normal text-outline">${cat.items.length} 項</span>
             </h4>
-
             <div class="flex flex-col gap-2">
-              ${cat.items.map((item, i) => `
+              ${cat.items.map(item => `
                 <label class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer group">
                   <input type="checkbox" onchange="toggleIngredientCheck(this)" class="mt-0.5 w-4 h-4 rounded text-primary focus:ring-primary-container border-outline-variant">
                   <div class="flex-grow">
@@ -1193,7 +1117,7 @@ function uploadDefaultRecipes() {
       let text = "🛒 陳家食譜 • 智慧買菜清單：\n";
       selectedRecipes.forEach(r => {
         text += `\n【${r.title}】\n`;
-        r.ingredients.forEach(i => {
+        (r.ingredients || []).forEach(i => {
           text += `• ${i.name} (${i.amount})\n`;
         });
       });
@@ -1205,7 +1129,7 @@ function uploadDefaultRecipes() {
       });
     }
 
-    // DYNAMIC PORTIONS LOGIC
+    // 9. 份量縮放邏輯
     function changePortion(targetPortion) {
       currentPortion = targetPortion;
       updatePortionButtonsUI();
@@ -1232,7 +1156,7 @@ function uploadDefaultRecipes() {
       const scaleFactor = currentPortion / baseServings;
 
       const ingredientsContainer = document.getElementById("modal-ingredients-list");
-      ingredientsContainer.innerHTML = activeRecipe.ingredients.map(ing => {
+      ingredientsContainer.innerHTML = (activeRecipe.ingredients || []).map(ing => {
         const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
         return `
           <label class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-lowest border border-secondary-container/20 hover:bg-surface-container/50 cursor-pointer transition-colors group">
@@ -1263,7 +1187,7 @@ function uploadDefaultRecipes() {
       });
     }
 
-    // FAVORITES TAB RENDER
+    // 10. 收藏與導覽
     function renderFavorites() {
       const grid = document.getElementById("favorites-grid");
       const favRecipes = recipes.filter(r => favorites.has(r.id));
@@ -1282,11 +1206,9 @@ function uploadDefaultRecipes() {
         <article onclick="openRecipeModal('${r.id}')" class="relative h-[280px] rounded-3xl overflow-hidden shadow-ambient group cursor-pointer">
           <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="${r.image}" alt="${r.title}">
           <div class="absolute inset-0 bg-gradient-to-t from-on-background/85 via-transparent to-transparent"></div>
-          
           <button onclick="toggleFavorite(event, '${r.id}')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-lowest/80 backdrop-blur-md text-primary flex items-center justify-center">
             <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">favorite</span>
           </button>
-
           <div class="absolute bottom-0 left-0 w-full p-5 text-white">
             <h2 class="font-bold text-lg mb-1">${r.title}</h2>
           </div>
@@ -1294,7 +1216,6 @@ function uploadDefaultRecipes() {
       `).join('');
     }
 
-    // NAVIGATION CONTROLS
     function selectCategory(cat) {
       selectedCategory = cat;
       renderCategoryTags();
@@ -1344,7 +1265,6 @@ function uploadDefaultRecipes() {
       document.getElementById("fav-count-badge").innerText = favorites.size;
     }
 
-    // TAB SWITCHER
     function switchTab(tab) {
       const tabs = ['home', 'fridge', 'shopping', 'favorites'];
       tabs.forEach(t => {
@@ -1353,7 +1273,6 @@ function uploadDefaultRecipes() {
         const mobileNav = document.getElementById(`mobile-nav-${t}`);
 
         if (content) content.classList.add("hidden");
-        
         if (desktopNav) {
           desktopNav.className = "font-medium text-sm text-on-surface-variant flex items-center gap-2 hover:bg-surface-container-low px-4 py-2.5 rounded-full transition-all active:scale-95";
         }
@@ -1382,7 +1301,7 @@ function uploadDefaultRecipes() {
       if (tab === 'favorites') renderFavorites();
     }
 
-    // RECIPE MODAL LOGIC
+    // 11. 食譜彈窗與筆記
     function openRecipeModal(id) {
       activeRecipe = recipes.find(r => r.id === id);
       if (!activeRecipe) return;
@@ -1401,18 +1320,14 @@ function uploadDefaultRecipes() {
       updatePortionButtonsUI();
       renderModalIngredientsWithPortion();
 
-      // Render Steps
       const stepsContainer = document.getElementById("modal-steps-list");
-      stepsContainer.innerHTML = activeRecipe.steps.map((step, idx) => `
+      stepsContainer.innerHTML = (activeRecipe.steps || []).map((step, idx) => `
         <div class="flex gap-3 p-4 rounded-2xl bg-surface-container-low/60 border border-secondary-container/30 items-start">
-          <span class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
-            ${idx + 1}
-          </span>
+          <span class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">${idx + 1}</span>
           <p class="text-body-md text-on-surface leading-relaxed flex-grow">${step}</p>
         </div>
       `).join('');
 
-      // Render Notes
       renderNotesForActiveRecipe();
 
       document.getElementById("recipe-modal").classList.remove("hidden");
@@ -1420,7 +1335,6 @@ function uploadDefaultRecipes() {
       document.body.style.overflow = "hidden";
     }
 
-    // NOTES LOGIC
     function renderNotesForActiveRecipe() {
       if (!activeRecipe) return;
       const notesList = recipeNotes[activeRecipe.id] || [];
@@ -1455,7 +1369,6 @@ function uploadDefaultRecipes() {
       if (!activeRecipe) return;
       const input = document.getElementById("new-note-input");
       const text = input.value.trim();
-
       if (!text) return;
 
       if (!recipeNotes[activeRecipe.id]) {
@@ -1478,12 +1391,10 @@ function uploadDefaultRecipes() {
 
     function deleteRecipeNote(index) {
       if (!activeRecipe || !recipeNotes[activeRecipe.id]) return;
-      
       recipeNotes[activeRecipe.id].splice(index, 1);
       if (recipeNotes[activeRecipe.id].length === 0) {
         delete recipeNotes[activeRecipe.id];
       }
-
       localStorage.setItem("warm_kitchen_notes", JSON.stringify(recipeNotes));
       renderNotesForActiveRecipe();
     }
@@ -1522,12 +1433,11 @@ function uploadDefaultRecipes() {
       } catch(e){}
     }
 
-    // HANDS-FREE COOKING MODE
+    // 12. 烹飪模式與計時器
     function startHandsFreeMode() {
       if (!activeRecipe) return;
       currentHandsFreeStep = 0;
       updateHandsFreeView();
-
       closeModal();
       document.getElementById("handsfree-modal").classList.remove("hidden");
       document.getElementById("handsfree-modal").classList.add("flex");
@@ -1543,7 +1453,7 @@ function uploadDefaultRecipes() {
     function updateHandsFreeView() {
       document.getElementById("hf-title").innerText = activeRecipe.title;
       document.getElementById("hf-current-step-num").innerText = currentHandsFreeStep + 1;
-      document.getElementById("hf-total-steps").innerText = activeRecipe.steps.length;
+      document.getElementById("hf-total-steps").innerText = (activeRecipe.steps || []).length;
       document.getElementById("hf-step-badge").innerText = currentHandsFreeStep + 1;
       document.getElementById("hf-step-text").innerText = activeRecipe.steps[currentHandsFreeStep];
 
@@ -1556,7 +1466,7 @@ function uploadDefaultRecipes() {
       }
 
       const dotsContainer = document.getElementById("hf-dots");
-      dotsContainer.innerHTML = activeRecipe.steps.map((_, idx) => `
+      dotsContainer.innerHTML = (activeRecipe.steps || []).map((_, idx) => `
         <span class="w-2.5 h-2.5 rounded-full transition-all ${idx === currentHandsFreeStep ? 'bg-primary w-6' : 'bg-surface-container-high'}"></span>
       `).join('');
     }
@@ -1593,7 +1503,6 @@ function uploadDefaultRecipes() {
       }
     }
 
-    // TIMER LOGIC
     function toggleTimer() {
       const btn = document.getElementById("timer-toggle-btn");
       if (isTimerRunning) {
@@ -1629,8 +1538,7 @@ function uploadDefaultRecipes() {
     function updateTimerDisplay() {
       const mins = Math.floor(timerSeconds / 60);
       const secs = timerSeconds % 60;
-      document.getElementById("timer-display").innerText = 
-        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      document.getElementById("timer-display").innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
     function playChimeSound() {
@@ -1648,13 +1556,12 @@ function uploadDefaultRecipes() {
       } catch(e){}
     }
 
-    // ADD & EDIT RECIPE MODAL LOGIC
+    // 13. 新增/修改食譜 (推送到 Firebase)
     function openAddModal() {
       document.getElementById("edit-recipe-id").value = "";
       document.getElementById("form-modal-title").innerHTML = '<span class="material-symbols-outlined">add_circle</span> 新增私房食譜';
       document.getElementById("add-recipe-form").reset();
       
-      // Reset Image Preview
       uploadedImageBase64 = "";
       document.getElementById("image-preview").src = "";
       document.getElementById("image-preview").classList.add("hidden");
@@ -1677,14 +1584,10 @@ function uploadDefaultRecipes() {
       document.getElementById("add-time").value = activeRecipe.time;
       document.getElementById("add-servings").value = activeRecipe.servings || 2;
 
-      // Fill ingredients
-      const ingText = activeRecipe.ingredients.map(i => `${i.name} ${i.amount}`).join(', ');
+      const ingText = (activeRecipe.ingredients || []).map(i => `${i.name} ${i.amount}`).join(', ');
       document.getElementById("add-ingredients").value = ingText;
+      document.getElementById("add-steps").value = (activeRecipe.steps || []).join('\n');
 
-      // Fill steps
-      document.getElementById("add-steps").value = activeRecipe.steps.join('\n');
-
-      // Set image preview
       uploadedImageBase64 = activeRecipe.image;
       const imgPreview = document.getElementById("image-preview");
       imgPreview.src = activeRecipe.image;
@@ -1701,7 +1604,6 @@ function uploadDefaultRecipes() {
       document.getElementById("add-modal").classList.remove("flex");
     }
 
-    // Photo Upload & Preview
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (file) {
@@ -1718,7 +1620,6 @@ function uploadDefaultRecipes() {
       }
     }
 
-    // Speech-To-Text (STT) for Ingredients
     function startSpeechRecognitionForIngredients() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const status = document.getElementById("stt-status");
@@ -1739,7 +1640,6 @@ function uploadDefaultRecipes() {
 
         recognition.start();
       } else {
-        // Fallback simulation for unsupported browsers
         status.classList.remove("hidden");
         status.innerText = "語音範例模擬：輸入『西蘭花一棵、蒜頭三瓣、鹽一茶匙』";
         setTimeout(() => {
@@ -1751,7 +1651,6 @@ function uploadDefaultRecipes() {
       }
     }
 
-    // SAVE OR UPDATE RECIPE
     function saveCustomRecipe(e) {
       e.preventDefault();
       const editId = document.getElementById("edit-recipe-id").value;
@@ -1773,13 +1672,9 @@ function uploadDefaultRecipes() {
       });
 
       const steps = rawSteps.map(s => s.trim()).filter(Boolean);
-
       const defaultImg = "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80";
 
-      if (editId) {
-        // EDIT MODE
-        const recipeIdx = recipes.findIndex(r => r.id === editId);
-        const recipeData = {
+      const recipeData = {
         title,
         category,
         tags: [`#${category}`, "#手作料理"],
@@ -1793,10 +1688,8 @@ function uploadDefaultRecipes() {
       };
 
       if (editId) {
-        // 修改：更新 Firebase 雲端資料
         recipesRef.child(editId).update(recipeData);
       } else {
-        // 新增：寫入 Firebase 生成新 key 並儲存
         const newRef = recipesRef.push();
         recipeData.id = newRef.key;
         newRef.set(recipeData);
@@ -1804,9 +1697,10 @@ function uploadDefaultRecipes() {
 
       closeAddModal();
       document.getElementById("add-recipe-form").reset();
-      alert(editId ? "✏️ 食譜已成功修改並同步！" : "🎉 私房食譜已成功新增並同步！");    }
+      alert(editId ? "✏️ 食譜已成功修改並同步！" : "🎉 私房食譜已成功新增並同步！");
+    }
 
-    // VOICE SEARCH SIMULATION
+    // 14. 語音搜尋模擬
     function openMicVoiceSearch() {
       document.getElementById("mic-dialog").classList.remove("hidden");
       document.getElementById("mic-dialog").classList.add("flex");
