@@ -157,7 +157,7 @@
       <section class="flex flex-col gap-md">
         <div class="relative w-full shadow-ambient rounded-full bg-surface-container-lowest border border-secondary-container/60 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary-container/50 transition-all">
           <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline">search</span>
-          <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="尋找靈感... 例如「意粉」、「氣炸鍋」或食材名" class="w-full h-14 pl-14 pr-28 rounded-full bg-transparent border-none focus:ring-0 text-base text-on-surface placeholder-outline-variant outline-none">
+          <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="尋找食譜" class="w-full h-14 pl-14 pr-28 rounded-full bg-transparent border-none focus:ring-0 text-base text-on-surface placeholder-outline-variant outline-none">
           <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
             <button onclick="clearSearch()" id="clear-search-btn" class="hidden w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant flex items-center justify-center transition-colors mr-1">
               <span class="material-symbols-outlined text-[18px]">close</span>
@@ -200,13 +200,13 @@
           </div>
           <div>
             <h2 class="font-bold text-2xl text-primary tracking-tight">清冰箱智慧搜尋</h2>
-            <p class="text-xs md:text-sm text-on-surface-variant mt-1">輸入家裡剩餘的食材，零浪費，自動匹配適合的美味料理。</p>
+            <p class="text-xs md:text-sm text-on-surface-variant mt-1">輸入陳家剩餘的食材，零浪費！</p>
           </div>
         </div>
 
         <div class="flex flex-col md:flex-row gap-3 mt-2">
           <div class="relative flex-grow">
-            <input type="text" id="fridge-ingredients-input" onkeyup="if(event.key==='Enter') searchFridgeRecipes()" placeholder="輸入食材（以逗號或空格分開，例如：西蘭花 雞肉 蒜頭）" class="w-full h-12 pl-11 pr-4 rounded-2xl bg-surface-container-lowest border border-secondary-container text-sm outline-none focus:ring-2 focus:ring-primary">
+            <input type="text" id="fridge-ingredients-input" onkeyup="if(event.key==='Enter') searchFridgeRecipes()" placeholder="輸入食材（以逗號或空格分開）" class="w-full h-12 pl-11 pr-4 rounded-2xl bg-surface-container-lowest border border-secondary-container text-sm outline-none focus:ring-2 focus:ring-primary">
             <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline">shopping_basket</span>
           </div>
           <button onclick="searchFridgeRecipes()" class="bg-primary text-on-primary font-semibold text-sm px-6 py-3 rounded-2xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-sm shrink-0 active:scale-95">
@@ -1537,7 +1537,7 @@
     // 13. 新增/修改食譜
     function openAddModal() {
       document.getElementById("edit-recipe-id").value = "";
-      document.getElementById("form-modal-title").innerHTML = '<span class="material-symbols-outlined">add_circle</span> 新增私房食譜';
+      document.getElementById("form-modal-title").innerHTML = '<span class="material-symbols-outlined">add_circle</span> 新增陳家食譜';
       document.getElementById("add-recipe-form").reset();
       
       uploadedImageBase64 = "";
