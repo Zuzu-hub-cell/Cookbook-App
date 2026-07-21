@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>暖心廚房 | Warm Kitchen Narrative</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    try {
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#685369",
+              "on-primary": "#ffffff",
+              "primary-container": "#FCC8B2",
+              "on-primary-container": "#4a354b",
+              "primary-fixed": "#FCC8B2",
+              "primary-fixed-dim": "#EFA48B",
+              "on-primary-fixed": "#322334",
+              "on-primary-fixed-variant": "#685369",
+              "secondary": "#EFA48B",
+              "on-secondary": "#ffffff",
+              "secondary-container": "#DBD8B3",
+              "on-secondary-container": "#3d382f",
+              "secondary-fixed": "#C6D8AF",
+              "secondary-fixed-dim": "#a2b887",
+              "on-secondary-fixed": "#253018",
+              "on-secondary-fixed-variant": "#435232",
+              "tertiary": "#C6D8AF",
+              "on-tertiary": "#233316",
+              "tertiary-container": "#e1ebd2",
+              "on-tertiary-container": "#324224",
+              "background": "#faf8f5",
+              "on-background": "#2a242c",
+              "surface": "#faf8f5",
+              "on-surface": "#2a242c",
+              "surface-variant": "#f0ebe3",
+              "on-surface-variant": "#5a505c",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-low": "#f6f2ec",
+              "surface-container": "#f0ebe3",
+              "surface-container-high": "#eae3d7",
+              "outline": "#8a7f8d",
+              "outline-variant": "#cfc5d1",
+              "error": "#ba1a1a"
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "2xl": "1.25rem",
+              "3xl": "1.75rem",
+              "full": "9999px"
+            },
+            spacing: {
+              "gutter": "16px",
+              "xs": "4px",
+              "xl": "64px",
+              "lg": "40px",
+              "container-margin": "20px",
+              "md": "24px",
+              "sm": "12px",
+              "base": "8px"
+            },
+            fontFamily: {
+              sans: ["Noto Sans TC", "sans-serif"],
+            },
+            boxShadow: {
+              'ambient': '0px 4px 20px rgba(104, 83, 105, 0.06)',
+              'ambient-lg': '0px 8px 30px rgba(104, 83, 105, 0.12)',
+            }
+          }
+        }
+      }
+    } catch (_e) {}
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.35); }
+    body { background-color: #faf8f5; color: #2a242c; font-family: 'Noto Sans TC', sans-serif; }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col mb-[80px] md:mb-0 selection:bg-primary-container selection:text-on-primary-container">
+
+  <!-- Top Mobile Header -->
+  <header class="w-full top-0 sticky bg-background/90 backdrop-blur-md shadow-ambient z-40 md:hidden border-b border-surface-container-high/40">
+    <div class="flex items-center justify-between px-container-margin h-16 w-full max-w-screen-xl mx-auto">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="resetFilters()">
+        <span class="material-symbols-outlined text-primary text-2xl">soup_kitchen</span>
+        <h1 class="font-bold text-xl text-primary tracking-tight">暖心廚房</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="switchTab('shopping')" class="relative text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full p-2.5 active:scale-95">
+          <span class="material-symbols-outlined text-xl">shopping_cart</span>
+          <span id="cart-badge-mobile" class="hidden absolute top-1 right-1 bg-secondary text-white text-[10px] font-bold w-4 h-4 rounded-full items-center justify-center">0</span>
+        </button>
+        <button onclick="openMicVoiceSearch()" title="語音搜尋" class="text-on-primary-container bg-primary-container hover:bg-primary-container/80 transition-colors rounded-full p-2.5 active:scale-95 shadow-sm flex items-center justify-center">
+          <span class="material-symbols-outlined text-xl">mic</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Desktop Header Nav -->
+  <nav class="hidden md:flex w-full top-0 sticky bg-background/90 backdrop-blur-md shadow-ambient z-40 h-20 items-center px-container-margin xl:px-xl border-b border-surface-container-high/40">
+    <div class="max-w-screen-xl mx-auto flex w-full justify-between items-center">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="resetFilters()">
+        <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shadow-sm">
+          <span class="material-symbols-outlined text-2xl">soup_kitchen</span>
+        </div>
+        <div>
+          <h1 class="font-bold text-2xl text-primary tracking-tight leading-none">暖心廚房</h1>
+          <p class="text-xs text-on-surface-variant mt-0.5 tracking-wider font-medium">Domestic Serenity Recipe Hub</p>
+        </div>
+      </div>
+
+      <div class="flex gap-2 items-center">
+        <button onclick="switchTab('home')" id="nav-home" class="font-medium text-sm text-primary flex items-center gap-2 bg-surface-container px-4 py-2.5 rounded-full transition-all active:scale-95 shadow-sm">
+          <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">home</span> 探索首頁
+        </button>
+        <button onclick="switchTab('fridge')" id="nav-fridge" class="font-medium text-sm text-on-surface-variant flex items-center gap-2 hover:bg-surface-container-low px-4 py-2.5 rounded-full transition-all active:scale-95">
+          <span class="material-symbols-outlined text-[20px]">kitchen</span> 清冰箱搜尋
+        </button>
+        <button onclick="switchTab('shopping')" id="nav-shopping" class="font-medium text-sm text-on-surface-variant flex items-center gap-2 hover:bg-surface-container-low px-4 py-2.5 rounded-full transition-all active:scale-95 relative">
+          <span class="material-symbols-outlined text-[20px]">shopping_cart</span> 智慧購物清單
+          <span id="cart-badge-desktop" class="hidden bg-secondary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+        </button>
+        <button onclick="switchTab('favorites')" id="nav-favorites" class="font-medium text-sm text-on-surface-variant flex items-center gap-2 hover:bg-surface-container-low px-4 py-2.5 rounded-full transition-all active:scale-95">
+          <span class="material-symbols-outlined text-[20px]">favorite</span> 收藏食譜 (<span id="fav-count-badge">0</span>)
+        </button>
+        <button onclick="openAddModal()" class="font-medium text-sm bg-primary text-on-primary flex items-center gap-2 hover:bg-primary/90 px-4 py-2.5 rounded-full transition-all active:scale-95 shadow-sm ml-2">
+          <span class="material-symbols-outlined text-[20px]">add_circle</span> 新增食譜
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="flex-grow w-full max-w-screen-xl mx-auto px-container-margin py-md md:py-lg flex flex-col gap-lg">
+
+    <!-- TAB 1: HOME -->
+    <div id="tab-home-content" class="flex flex-col gap-lg">
+      
+      <!-- Search Bar & Switch to Fridge Clear -->
+      <section class="flex flex-col gap-md">
+        <div class="relative w-full shadow-ambient rounded-full bg-surface-container-lowest border border-secondary-container/60 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary-container/50 transition-all">
+          <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline">search</span>
+          <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="尋找靈感... 例如「南瓜濃湯」、「氣炸鍋」或食材名" class="w-full h-14 pl-14 pr-28 rounded-full bg-transparent border-none focus:ring-0 text-base text-on-surface placeholder-outline-variant outline-none">
+          
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            <button onclick="clearSearch()" id="clear-search-btn" class="hidden w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant flex items-center justify-center transition-colors mr-1">
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+            <button onclick="switchTab('fridge')" class="bg-primary-container/70 text-on-primary-container hover:bg-primary-container text-xs font-semibold px-3 py-2 rounded-full flex items-center gap-1 transition-all">
+              <span class="material-symbols-outlined text-[16px]">kitchen</span> 剩餘食材？
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Tags Carousel -->
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 pt-1 -mx-container-margin px-container-margin md:mx-0 md:px-0 w-full" id="tag-filters">
+            <!-- Dynamic category tags -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Recipe Grid Header -->
+      <div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+          <h2 class="font-bold text-xl text-on-surface tracking-tight" id="section-title">暖心精選食譜</h2>
+          <span class="text-xs text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full font-medium" id="recipe-count-badge">0 道食譜</span>
+        </div>
+        <div class="flex items-center gap-1 text-xs text-on-surface-variant">
+          <span>排序：</span>
+          <select id="sort-select" onchange="handleSortChange(this.value)" class="bg-surface-container-low border-none rounded-lg text-xs font-medium py-1 pl-2 pr-6 focus:ring-1 focus:ring-primary text-on-surface">
+            <option value="default">預設推薦</option>
+            <option value="time">烹飪時間 (由短至長)</option>
+            <option value="likes">最多人喜愛</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Bento Grid Recipes Container -->
+      <section id="recipe-grid" class="grid grid-cols-1 md:grid-cols-3 gap-md min-h-[300px]">
+        <!-- Cards rendered via JS -->
+      </section>
+    </div>
+
+    <!-- TAB 2: SMART FRIDGE CLEARANCE (清冰箱智慧搜尋) -->
+    <div id="tab-fridge-content" class="hidden flex-col gap-lg">
+      <div class="bg-gradient-to-r from-secondary-container/60 via-primary-container/50 to-surface-container p-6 md:p-8 rounded-3xl border border-secondary-container/60 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-surface-container-lowest text-primary flex items-center justify-center shadow-sm shrink-0">
+            <span class="material-symbols-outlined text-3xl">kitchen</span>
+          </div>
+          <div>
+            <h2 class="font-bold text-2xl text-primary tracking-tight">清冰箱智慧搜尋</h2>
+            <p class="text-xs md:text-sm text-on-surface-variant mt-1">輸入家裡剩餘的食材，零浪費食材（不嘥嘢食），自動匹配適合的美味料理。</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-3 mt-2">
+          <div class="relative flex-grow">
+            <input type="text" id="fridge-ingredients-input" onkeyup="if(event.key==='Enter') searchFridgeRecipes()" placeholder="輸入食材（以逗號或空格分開，例如：西蘭花 雞肉 蒜頭）" class="w-full h-12 pl-11 pr-4 rounded-2xl bg-surface-container-lowest border border-secondary-container text-sm outline-none focus:ring-2 focus:ring-primary">
+            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline">shopping_basket</span>
+          </div>
+          <button onclick="searchFridgeRecipes()" class="bg-primary text-on-primary font-semibold text-sm px-6 py-3 rounded-2xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-sm shrink-0 active:scale-95">
+            <span class="material-symbols-outlined text-[20px]">auto_awesome</span> 智慧推薦食譜
+          </button>
+        </div>
+
+        <!-- Quick Ingredient Badges -->
+        <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-secondary-container/30">
+          <span class="text-xs text-on-surface-variant font-medium">常見剩餘食材快速點選：</span>
+          <button onclick="addFridgeChip('西蘭花')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 西蘭花</button>
+          <button onclick="addFridgeChip('雞肉')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 雞肉</button>
+          <button onclick="addFridgeChip('豆腐')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 豆腐</button>
+          <button onclick="addFridgeChip('檸檬')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 檸檬</button>
+          <button onclick="addFridgeChip('彩椒')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 彩椒</button>
+          <button onclick="addFridgeChip('蒜頭')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 蒜頭</button>
+        </div>
+      </div>
+
+      <!-- Results Grid -->
+      <div id="fridge-results-header" class="hidden items-center justify-between border-b border-surface-container-high pb-2">
+        <h3 class="font-bold text-lg text-on-surface">清冰箱食譜推薦結果</h3>
+        <span id="fridge-match-count" class="text-xs font-semibold text-primary bg-primary-container/50 px-3 py-1 rounded-full">找到 0 道可消耗食譜</span>
+      </div>
+
+      <div id="fridge-results-grid" class="grid grid-cols-1 md:grid-cols-3 gap-md min-h-[250px]">
+        <div class="col-span-full py-16 flex flex-col items-center justify-center text-center text-on-surface-variant bg-surface-container-low/40 rounded-3xl border border-dashed border-secondary-container">
+          <span class="material-symbols-outlined text-5xl text-outline-variant mb-2">kitchen</span>
+          <p class="font-medium text-base">請在上方輸入您現有的食材</p>
+          <p class="text-xs text-outline mt-1">例如「西蘭花、雞肉」，系統將優先推薦能消耗這些食材的食譜</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: SMART SHOPPING LIST (智慧購物清單) -->
+    <div id="tab-shopping-content" class="hidden flex-col gap-lg">
+      <div class="bg-surface-container-low p-6 md:p-8 rounded-3xl border border-secondary-container/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-2xl">shopping_cart</span>
+            <h2 class="font-bold text-2xl text-primary tracking-tight">智慧購物清單</h2>
+          </div>
+          <p class="text-xs md:text-sm text-on-surface-variant mt-1">已將選定食譜的食材自動歸類（蔬菜、肉類、調味品），街市或超市一次補齊不漏買。</p>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <button onclick="copyShoppingListText()" class="bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-secondary-container px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-all">
+            <span class="material-symbols-outlined text-[16px]">content_copy</span> 複製文字
+          </button>
+          <button onclick="clearShoppingList()" class="bg-error/10 hover:bg-error/20 text-error px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all">
+            <span class="material-symbols-outlined text-[16px]">delete</span> 清空購物車
+          </button>
+        </div>
+      </div>
+
+      <!-- Selected Recipes Pills -->
+      <div class="flex flex-col gap-2">
+        <h3 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">已選採購食譜：</h3>
+        <div id="shopping-recipes-pills" class="flex flex-wrap gap-2">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Categorized Shopping List Grid -->
+      <div id="shopping-categories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+        <!-- Rendered categories -->
+      </div>
+    </div>
+
+    <!-- TAB 4: FAVORITES -->
+    <div id="tab-favorites-content" class="hidden flex-col gap-lg">
+      <div class="bg-surface-container-low p-6 md:p-8 rounded-2xl border border-secondary-container/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 class="font-bold text-2xl text-primary tracking-tight">收藏靈感庫</h2>
+          <p class="text-sm text-on-surface-variant mt-1">您收藏的溫暖料理，隨時準備在廚房重演美妙時刻。</p>
+        </div>
+        <button onclick="switchTab('home')" class="bg-primary text-on-primary font-medium text-sm px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity flex items-center gap-2 shadow-sm">
+          <span class="material-symbols-outlined text-[18px]">search</span> 尋找更多食譜
+        </button>
+      </div>
+
+      <div id="favorites-grid" class="grid grid-cols-1 md:grid-cols-3 gap-md">
+        <!-- Favorite Cards rendered via JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Mobile Nav -->
+  <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2.5 bg-surface/95 backdrop-blur-md shadow-[0px_-4px_20px_rgba(74,63,63,0.08)] border-t border-surface-container-high/40 md:hidden">
+    <button onclick="switchTab('home')" id="mobile-nav-home" class="flex flex-col items-center justify-center text-primary px-3 py-1 transition-all">
+      <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">home</span>
+      <span class="font-medium text-[10px] mt-0.5">首頁</span>
+    </button>
+    <button onclick="switchTab('fridge')" id="mobile-nav-fridge" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-3 py-1 transition-all">
+      <span class="material-symbols-outlined text-xl">kitchen</span>
+      <span class="font-medium text-[10px] mt-0.5">清冰箱</span>
+    </button>
+    <button onclick="switchTab('shopping')" id="mobile-nav-shopping" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-3 py-1 transition-all relative">
+      <span class="material-symbols-outlined text-xl">shopping_cart</span>
+      <span class="font-medium text-[10px] mt-0.5">購物車</span>
+    </button>
+    <button onclick="switchTab('favorites')" id="mobile-nav-favorites" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-3 py-1 transition-all">
+      <span class="material-symbols-outlined text-xl">favorite</span>
+      <span class="font-medium text-[10px] mt-0.5">收藏</span>
+    </button>
+    <button onclick="openAddModal()" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-3 py-1 transition-all">
+      <span class="material-symbols-outlined text-xl">add_circle</span>
+      <span class="font-medium text-[10px] mt-0.5">新增</span>
+    </button>
+  </nav>
+
+  <!-- RECIPE DETAIL MODAL -->
+  <div id="recipe-modal" class="fixed inset-0 z-50 bg-on-background/50 backdrop-blur-sm hidden items-center justify-center p-3 md:p-6 overflow-y-auto">
+    <div class="bg-surface-container-lowest rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-ambient-lg border border-secondary-container/50 flex flex-col relative my-auto">
+      
+      <!-- Sticky Modal Top Actions -->
+      <div class="sticky top-0 z-20 flex items-center justify-between px-6 py-4 bg-surface-container-lowest/90 backdrop-blur-md border-b border-surface-container-high">
+        <div class="flex items-center gap-2">
+          <span id="modal-category-badge" class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-lg font-medium text-xs">標籤</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Add to Shopping List Button -->
+          <button id="modal-cart-btn" onclick="toggleCartFromModal()" class="px-3.5 py-2 rounded-full bg-primary-container text-on-primary-container hover:bg-primary-container/80 text-xs font-semibold flex items-center gap-1.5 transition-all">
+            <span class="material-symbols-outlined text-base">add_shopping_cart</span> 購物清單
+          </button>
+          
+          <!-- Edit Recipe Button -->
+          <button onclick="openEditRecipeModal()" title="修改/編輯食譜" class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-xl">edit</span>
+          </button>
+
+          <!-- Favorite Button -->
+          <button id="modal-fav-btn" onclick="toggleModalFavorite()" class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-primary flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-xl" id="modal-fav-icon">favorite_border</span>
+          </button>
+          
+          <!-- Close Modal Button -->
+          <button onclick="closeModal()" class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-xl">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body Content -->
+      <div class="p-6 md:p-8 flex flex-col gap-6">
+        <!-- Hero Header -->
+        <div class="relative rounded-2xl overflow-hidden h-64 md:h-80 shadow-sm group">
+          <img id="modal-image" src="" alt="" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-on-background/80 via-on-background/20 to-transparent"></div>
+          <div class="absolute bottom-4 left-4 right-4 text-white">
+            <h2 id="modal-title" class="font-bold text-2xl md:text-3xl mb-2 text-shadow">食譜名稱</h2>
+          </div>
+        </div>
+
+        <!-- Meta Info Bar & Dynamic Portion Control -->
+        <div class="flex flex-col gap-3 bg-surface-container-low p-4 rounded-2xl border border-secondary-container/30">
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-center">
+            <div>
+              <span class="text-xs text-on-surface-variant block mb-1">預估時間</span>
+              <span id="modal-time" class="font-bold text-primary flex items-center justify-center gap-1 text-sm md:text-base">
+                <span class="material-symbols-outlined text-[18px]">schedule</span> 15 分鐘
+              </span>
+            </div>
+            <div class="border-x border-outline-variant/40">
+              <span class="text-xs text-on-surface-variant block mb-1">難易度</span>
+              <span id="modal-difficulty" class="font-bold text-primary text-sm md:text-base">簡單</span>
+            </div>
+            <div class="col-span-2 md:col-span-1">
+              <span class="text-xs text-on-surface-variant block mb-1">基準份量</span>
+              <span id="modal-servings" class="font-bold text-primary text-sm md:text-base">2 人份</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Portion Adjuster Button Group -->
+          <div class="border-t border-surface-container-high/60 pt-3 flex items-center justify-between flex-wrap gap-2">
+            <span class="text-xs font-semibold text-primary flex items-center gap-1">
+              <span class="material-symbols-outlined text-base">groups</span> 動態份量縮放：
+            </span>
+            <div class="flex items-center gap-1.5 bg-surface-container-lowest p-1 rounded-xl border border-secondary-container/30">
+              <button onclick="changePortion(1)" id="btn-portion-1" class="px-3 py-1 rounded-lg text-xs font-medium transition-all">1人份</button>
+              <button onclick="changePortion(2)" id="btn-portion-2" class="px-3 py-1 rounded-lg text-xs font-medium transition-all">2人份</button>
+              <button onclick="changePortion(4)" id="btn-portion-4" class="px-3 py-1 rounded-lg text-xs font-medium transition-all">4人份</button>
+              <button onclick="changePortion(6)" id="btn-portion-6" class="px-3 py-1 rounded-lg text-xs font-medium transition-all">6人份</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hands-Free CTA Bar -->
+        <div class="bg-gradient-to-r from-primary-container/80 to-secondary-container/80 p-4 rounded-2xl flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center shadow-xs">
+              <span class="material-symbols-outlined">pan_tool</span>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-on-primary-container">心無旁騖 / 語音導讀模式</h4>
+              <p class="text-xs text-on-primary-container/80">大字體顯示 + 語音自動朗讀步驟</p>
+            </div>
+          </div>
+          <button onclick="startHandsFreeMode()" class="bg-primary text-on-primary font-semibold text-xs md:text-sm px-4 py-2.5 rounded-full hover:bg-primary/90 transition-all shadow-sm whitespace-nowrap active:scale-95">
+            進入烹飪模式
+          </button>
+        </div>
+
+        <!-- Ingredients Section -->
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg text-on-surface flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">shopping_basket</span> 所需食材準備
+              <span class="text-xs font-normal text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-md" id="current-portion-label"> (2人份)</span>
+            </h3>
+            <span class="text-xs text-outline font-medium">點擊勾選以記錄備料</span>
+          </div>
+          <div id="modal-ingredients-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-surface-container-low/50 p-4 rounded-2xl border border-secondary-container/20">
+            <!-- Rendered ingredients with dynamic portion amounts -->
+          </div>
+        </div>
+
+        <!-- Steps Section -->
+        <div class="flex flex-col gap-4">
+          <h3 class="font-bold text-lg text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">skillet</span> 烹飪步驟說明
+          </h3>
+          <div id="modal-steps-list" class="flex flex-col gap-3">
+            <!-- Rendered steps -->
+          </div>
+        </div>
+
+        <!-- Personal Cook Notes Section -->
+        <div class="flex flex-col gap-3 bg-surface-container-low/60 p-5 rounded-2xl border border-secondary-container/30">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg text-on-surface flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">edit_note</span> 私房烹飪筆記
+            </h3>
+            <span class="text-xs text-outline font-medium" id="notes-count-badge">0 條筆記</span>
+          </div>
+
+          <!-- Existing Notes List -->
+          <div id="modal-notes-list" class="flex flex-col gap-2">
+            <!-- Rendered notes -->
+          </div>
+
+          <!-- Add Note Input Area -->
+          <div class="flex gap-2 mt-1">
+            <input type="text" id="new-note-input" placeholder="記錄烹飪心得或調整備忘（例如：上次鹹度減半、氣炸多加2分鐘...）" class="flex-grow rounded-xl bg-surface-container-lowest border border-secondary-container/50 px-3.5 py-2 text-xs md:text-sm focus:ring-2 focus:ring-primary outline-none" onkeyup="if(event.key==='Enter') saveRecipeNote()">
+            <button onclick="saveRecipeNote()" class="bg-primary text-on-primary hover:bg-primary/90 text-xs font-semibold px-4 py-2 rounded-xl transition-all shrink-0 active:scale-95 flex items-center gap-1 shadow-xs">
+              <span class="material-symbols-outlined text-base">add</span> 記下
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- HANDS-FREE COOKING FULLSCREEN MODAL -->
+  <div id="handsfree-modal" class="fixed inset-0 z-50 bg-background hidden flex-col">
+    <div class="p-4 md:p-6 bg-surface-container-low border-b border-surface-container-high flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-primary text-2xl">soup_kitchen</span>
+        <div>
+          <h3 id="hf-title" class="font-bold text-lg text-on-surface">食譜名稱</h3>
+          <p class="text-xs text-on-surface-variant">專注烹飪模式 • Step <span id="hf-current-step-num">1</span> / <span id="hf-total-steps">5</span></p>
+        </div>
+      </div>
+      <button onclick="closeHandsFreeMode()" class="px-4 py-2 bg-surface-container text-on-surface rounded-full text-xs font-semibold hover:bg-surface-container-high">
+        退出模式
+      </button>
+    </div>
+
+    <div class="flex-grow flex flex-col justify-center items-center px-6 md:px-16 py-8 text-center max-w-4xl mx-auto w-full">
+      <div class="w-16 h-16 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center text-2xl font-bold mb-6 shadow-sm" id="hf-step-badge">
+        1
+      </div>
+      <p id="hf-step-text" class="text-2xl md:text-3xl font-medium leading-relaxed text-on-surface tracking-wide mb-8">
+        載入中...
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-4 my-4">
+        <button onclick="speakCurrentStep()" class="bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 px-5 py-3 rounded-full font-semibold text-sm flex items-center gap-2 shadow-xs active:scale-95 transition-all">
+          <span class="material-symbols-outlined">volume_up</span> 朗讀此步驟
+        </button>
+
+        <div class="flex items-center gap-2 bg-surface-container-high px-4 py-2.5 rounded-full">
+          <span class="material-symbols-outlined text-primary">timer</span>
+          <span id="timer-display" class="font-mono font-bold text-lg text-on-surface min-w-[60px]">03:00</span>
+          <button onclick="toggleTimer()" id="timer-toggle-btn" class="bg-primary text-on-primary text-xs px-3 py-1 rounded-full font-medium ml-1">
+            開始
+          </button>
+          <button onclick="resetTimer()" class="text-on-surface-variant text-xs hover:text-primary">重置</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-between max-w-4xl mx-auto w-full">
+      <button onclick="prevStep()" id="hf-prev-btn" class="px-6 py-3 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold text-sm flex items-center gap-2 disabled:opacity-40">
+        <span class="material-symbols-outlined">arrow_back</span> 上一步
+      </button>
+
+      <div class="flex gap-1" id="hf-dots"></div>
+
+      <button onclick="nextStep()" id="hf-next-btn" class="px-6 py-3 rounded-full bg-primary text-on-primary hover:bg-primary/90 font-semibold text-sm flex items-center gap-2 shadow-sm active:scale-95">
+        下一步 <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT RECIPE MODAL (Removed Short Description, Added Image Upload & Voice STT) -->
+  <div id="add-modal" class="fixed inset-0 z-50 bg-on-background/50 backdrop-blur-sm hidden items-center justify-center p-3 md:p-6 overflow-y-auto">
+    <div class="bg-surface-container-lowest rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-ambient-lg border border-secondary-container/50 flex flex-col p-6 md:p-8 relative my-auto">
+      <div class="flex items-center justify-between border-b border-surface-container-high pb-4 mb-6">
+        <h3 id="form-modal-title" class="font-bold text-xl text-primary flex items-center gap-2">
+          <span class="material-symbols-outlined">add_circle</span> 新增私房食譜
+        </h3>
+        <button onclick="closeAddModal()" class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center hover:bg-surface-container-high">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <form id="add-recipe-form" onsubmit="saveCustomRecipe(event)" class="flex flex-col gap-4">
+        <!-- Hidden input for Edit Mode ID -->
+        <input type="hidden" id="edit-recipe-id" value="">
+
+        <!-- Title Input -->
+        <div>
+          <label class="block text-xs font-semibold text-on-surface-variant mb-1">食譜名稱 *</label>
+          <input type="text" id="add-title" required placeholder="例如：西蘭花炒蒜香雞肉" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+        </div>
+
+        <!-- Photo Capture / Image Upload -->
+        <div>
+          <label class="block text-xs font-semibold text-on-surface-variant mb-1">食譜照片（可上傳或拍照）</label>
+          <div class="flex items-center gap-4">
+            <div class="relative w-24 h-24 rounded-2xl bg-surface-container-low border border-dashed border-secondary-container flex flex-col items-center justify-center text-on-surface-variant overflow-hidden shrink-0">
+              <img id="image-preview" src="" class="hidden w-full h-full object-cover">
+              <span id="image-placeholder-icon" class="material-symbols-outlined text-3xl">photo_camera</span>
+              <span id="image-placeholder-text" class="text-[10px] mt-1">選擇照片</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="cursor-pointer bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 text-xs px-4 py-2 rounded-xl font-semibold inline-flex items-center gap-1.5 transition-all">
+                <span class="material-symbols-outlined text-base">upload</span> 上傳 / 拍攝照片
+                <input type="file" id="add-image-file" accept="image/*" onchange="handleImageUpload(event)" class="hidden">
+              </label>
+              <p class="text-[11px] text-outline">可上傳廚房現場成品照或照片檔案</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category & Time & Base Servings -->
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">主要類別</label>
+            <select id="add-category" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-3 py-2.5 text-xs md:text-sm focus:ring-2 focus:ring-primary outline-none">
+              <option value="餸菜">餸菜</option>
+              <option value="飯">飯</option>
+              <option value="麵">麵</option>
+              <option value="湯">湯</option>
+              <option value="粥">粥</option>
+              <option value="麵包">麵包</option>
+              <option value="甜品">甜品</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">烹飪時間 (分)</label>
+            <input type="number" id="add-time" value="15" min="1" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-3 py-2.5 text-xs md:text-sm focus:ring-2 focus:ring-primary outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-on-surface-variant mb-1">基準人數</label>
+            <input type="number" id="add-servings" value="2" min="1" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-3 py-2.5 text-xs md:text-sm focus:ring-2 focus:ring-primary outline-none">
+          </div>
+        </div>
+
+        <!-- Ingredients Section with Voice STT -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-semibold text-on-surface-variant">食材清單 (以逗號或換行分開) *</label>
+            <button type="button" onclick="startSpeechRecognitionForIngredients()" id="btn-stt" class="bg-primary-container text-on-primary-container hover:bg-primary-container/80 text-[11px] px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1 transition-all">
+              <span class="material-symbols-outlined text-[15px]">mic</span> 語音唸食材
+            </button>
+          </div>
+          <textarea id="add-ingredients" rows="3" required placeholder="例如：西蘭花 1棵, 雞胸肉 200克, 蒜頭 3瓣, 鹽 1茶匙" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary outline-none"></textarea>
+          <p id="stt-status" class="hidden text-[11px] text-primary mt-1 font-medium animate-pulse">正在聆聽語音... 請唸出食材用量</p>
+        </div>
+
+        <!-- Cooking Steps -->
+        <div>
+          <label class="block text-xs font-semibold text-on-surface-variant mb-1">烹飪步驟 (每行步驟請換行) *</label>
+          <textarea id="add-steps" rows="4" required placeholder="步驟一：西蘭花切小朵洗淨，雞肉切塊備用&#10;步驟二：熱鍋爆香蒜片，加入雞肉炒至變色&#10;步驟三：加入西蘭花與鹽快炒至熟透即可" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary outline-none"></textarea>
+        </div>
+
+        <div class="mt-4 flex justify-end gap-3 border-t border-surface-container-high pt-4">
+          <button type="button" onclick="closeAddModal()" class="px-5 py-2.5 rounded-full bg-surface-container text-on-surface-variant text-sm font-medium hover:bg-surface-container-high">取消</button>
+          <button type="submit" class="px-6 py-2.5 rounded-full bg-primary text-on-primary text-sm font-semibold shadow-sm hover:bg-primary/90">儲存食譜</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- VOICE SIMULATION DIALOG -->
+  <div id="mic-dialog" class="fixed inset-0 z-50 bg-on-background/40 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-surface-container-lowest p-6 rounded-3xl max-w-sm w-full text-center flex flex-col items-center gap-4 shadow-ambient-lg border border-secondary-container">
+      <div class="w-16 h-16 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center animate-pulse">
+        <span class="material-symbols-outlined text-3xl">mic</span>
+      </div>
+      <h3 class="font-bold text-lg text-on-surface">正在聆聽語音指令...</h3>
+      <p class="text-xs text-on-surface-variant">請試著說：「西蘭花」、「雞肉」或「氣炸鍋」</p>
+      <div class="flex gap-2 w-full mt-2">
+        <button onclick="simulateVoiceInput('西蘭花')" class="flex-1 py-2 bg-surface-container-low text-xs text-primary rounded-xl font-medium border border-secondary-container/30">「西蘭花」</button>
+        <button onclick="simulateVoiceInput('氣炸鍋')" class="flex-1 py-2 bg-surface-container-low text-xs text-primary rounded-xl font-medium border border-secondary-container/30">「氣炸鍋」</button>
+      </div>
+      <button onclick="closeMicVoiceSearch()" class="mt-2 text-xs text-outline underline">關閉語音對話</button>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // INITIAL RECIPE DATA STORE
+    const defaultRecipes = [
+      {
+        id: "r1",
+        title: "暖陽甜薯藜麥沙拉",
+        category: "餸菜",
+        tags: ["#無紅肉", "#15分鐘快手菜"],
+        time: 15,
+        likes: 1240,
+        servings: 2,
+        difficulty: "簡單",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBJJeb_IlEwjEAFDxK5rRBNpPbCUaqzAUiu-syKyEvyFu_04Nt-QOv0pUJ86BcFTOE4mWbQSYwRdGGAyciVQcftAh2ONLJ78AD7ddBeQK0Xj0-g5aHA8wlHaGZNPYIKdoDo7FYcVIt-vGmevaUuTevapbvftQr3X-nvPRsddLJq1ewg6P9TjfflGDkl24DYQQRowFTeHweQp_VCN8wmsFGd9EVWNqeRE3AlHbKnpLdVfP3-1yElqSGXJw",
+        ingredients: [
+          { name: "黃金甜薯", amount: "100 克 (切塊)" },
+          { name: "有機三色藜麥", amount: "50 克 (煮熟)" },
+          { name: "新鮮酪梨", amount: "0.5 顆 (切片)" },
+          { name: "綜合生菜", amount: "80 克" },
+          { name: "特級初榨橄欖油", amount: "1 大匙" },
+          { name: "檸檬汁", amount: "1 匙" }
+        ],
+        steps: [
+          "將甜薯切成塊狀，放入蒸鍋蒸煮 10 分鐘至軟糯。",
+          "將藜麥依照 1:2 比例的水煮熟後瀝乾備用。",
+          "生菜清洗乾淨，瀝乾後鋪於盤底。",
+          "將熟甜薯、藜麥與切片酪梨均勻擺放於生菜上。",
+          "淋上特級初榨橄欖油與檸檬汁，微拌即可享用。"
+        ]
+      },
+      {
+        id: "r2",
+        title: "蒜香西蘭花炒雞丁",
+        category: "餸菜",
+        tags: ["#高蛋白", "#清冰箱熱門"],
+        time: 15,
+        likes: 1520,
+        servings: 2,
+        difficulty: "簡單",
+        image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+        ingredients: [
+          { name: "西蘭花", amount: "1 棵 (切小朵)" },
+          { name: "雞胸肉", amount: "200 克 (切丁)" },
+          { name: "蒜頭", amount: "3 瓣 (拍碎)" },
+          { name: "醬油", amount: "1 大匙" },
+          { name: "橄欖油", amount: "1 匙" },
+          { name: "鹽與黑胡椒", amount: "少許" }
+        ],
+        steps: [
+          "西蘭花切小朵放入沸水中焯水 1 分鐘後撈出瀝乾。",
+          "雞肉丁用少許醬油醃製 5 分鐘。",
+          "熱鍋倒入橄欖油爆香蒜頭，加入雞肉丁翻炒至變色。",
+          "倒入焯好水的西蘭花，加入海鹽與黑胡椒快炒 2 分鐘即可起鍋。"
+        ]
+      },
+      {
+        id: "r3",
+        title: "香酥百頁豆腐",
+        category: "餸菜",
+        tags: ["#氣炸鍋", "#無紅肉"],
+        time: 10,
+        likes: 890,
+        servings: 2,
+        difficulty: "極簡易",
+        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAlsCu4XzgoNToRqInVrwzD_fxMVYhmoBs-nRzY2Hwb2OgJAMfqKCB9Q_yfyL0ZkBMYrj_sTCRyewH4MvIJDIf4CcNsMhjnqxuxNGTovNv4rZ0BiskbrMiCiSz9KVBAnt2unrIMgqYGUDVWUlwwYnPb2ASHeiJekvjgtxSmVh3YpUND5dFzp_yp3_yjCrHr-fJhCKHIJG2SlyelKXK94F-ySTsZWr2gi9CLGeuAcnqvBp729MOpQ9Hi3w",
+        ingredients: [
+          { name: "百頁豆腐", amount: "1 塊" },
+          { name: "植物油", amount: "1 匙" },
+          { name: "胡椒鹽", amount: "適量" },
+          { name: "義式香草粉", amount: "少許" }
+        ],
+        steps: [
+          "百頁豆腐用廚房紙巾吸乾表面水分，切成均勻正方形小塊。",
+          "豆腐塊表面刷上少許植物油。",
+          "放進氣炸鍋，設定 180°C 氣炸 8 分鐘。",
+          "中途拉出氣炸籃稍微翻面，再氣炸 2 分鐘至金黃酥脆。",
+          "起鍋撒上胡椒鹽與香草粉即可美味上桌。"
+        ]
+      },
+      {
+        id: "r4",
+        title: "野營鮮蔬鐵鍋煎",
+        category: "餸菜",
+        tags: ["#露營食譜", "#15分"],
+        time: 15,
+        likes: 650,
+        servings: 3,
+        difficulty: "簡單",
+        image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80",
+        ingredients: [
+          { name: "櫛瓜", amount: "1 條" },
+          { name: "彩椒", amount: "2 個" },
+          { name: "小蕃茄", amount: "8 顆" },
+          { name: "蒜頭", amount: "3 瓣" },
+          { name: "海鹽與黑胡椒", amount: "少許" }
+        ],
+        steps: [
+          "櫛瓜切圓片，彩椒切塊備用。",
+          "鑄鐵鍋燒熱，倒入橄欖油爆香蒜片。",
+          "加入櫛瓜與彩椒塊，中火香煎至表面微焦。",
+          "放入小蕃茄稍微煎破皮，出汁提味。",
+          "撒上海鹽與現磨黑胡椒即可享用。"
+        ]
+      },
+      {
+        id: "r5",
+        title: "清檸紙包鱸魚",
+        category: "餸菜",
+        tags: ["#無紅肉", "#無油煙"],
+        time: 20,
+        likes: 1100,
+        servings: 2,
+        difficulty: "中等",
+        image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80",
+        ingredients: [
+          { name: "鱸魚排", amount: "200 克" },
+          { name: "檸檬", amount: "1 顆 (切片)" },
+          { name: "洋蔥", amount: "0.25 顆 (切絲)" },
+          { name: "白酒", amount: "1 大匙" },
+          { name: "奶油", amount: "10 克" }
+        ],
+        steps: [
+          "烘焙紙鋪平，底層鋪上洋蔥絲。",
+          "放上魚排，淋上白酒與少許鹽抹勻。",
+          "魚排上鋪檸檬片與一小塊奶油。",
+          "將烘焙紙四周密封包裹好。",
+          "放入預熱 200°C 烤箱烘烤 18 分鐘至熟透即可。"
+        ]
+      }
+    ];
+
+    // STATE VARIABLES
+    let recipes = [];
+    let favorites = new Set();
+    let shoppingListRecipeIds = new Set();
+    let recipeNotes = {}; // recipeId -> Array of { id, text, date }
+    let selectedCategory = "全部";
+    let searchQuery = "";
+    let sortOption = "default";
+    let activeRecipe = null;
+    let currentPortion = 2; // Dynamic Portion current selected
+    let currentHandsFreeStep = 0;
+    let uploadedImageBase64 = "";
+
+    // TIMER STATE
+    let timerInterval = null;
+    let timerSeconds = 180;
+    let isTimerRunning = false;
+
+    const categories = ["全部", "餸菜", "飯", "麵", "湯", "粥", "麵包", "甜品"];
+
+    // INITIALIZATION
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("warm_kitchen_recipes");
+      recipes = saved ? JSON.parse(saved) : defaultRecipes;
+
+      const savedFavs = localStorage.getItem("warm_kitchen_favs");
+      if (savedFavs) favorites = new Set(JSON.parse(savedFavs));
+
+      const savedCart = localStorage.getItem("warm_kitchen_cart");
+      if (savedCart) shoppingListRecipeIds = new Set(JSON.parse(savedCart));
+
+      const savedNotes = localStorage.getItem("warm_kitchen_notes");
+      if (savedNotes) recipeNotes = JSON.parse(savedNotes);
+
+      renderCategoryTags();
+      renderRecipes();
+      updateFavCount();
+      updateCartBadge();
+    });
+
+    // RENDER CATEGORY TAGS
+    function renderCategoryTags() {
+      const container = document.getElementById("tag-filters");
+      container.innerHTML = categories.map(cat => {
+        const isActive = selectedCategory === cat;
+        return `
+          <button onclick="selectCategory('${cat}')" class="whitespace-nowrap px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 flex items-center gap-1.5 ${
+            isActive 
+              ? 'bg-secondary-container text-on-secondary-container shadow-sm border border-primary/20 scale-[1.02]' 
+              : 'bg-secondary-container/40 text-on-surface-variant hover:bg-secondary-container/70'
+          }">
+            ${getCategoryIcon(cat)} ${cat}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function getCategoryIcon(cat) {
+      switch(cat) {
+        case '餸菜': return '<span class="material-symbols-outlined text-[18px]">restaurant</span>';
+        case '飯': return '<span class="material-symbols-outlined text-[18px]">rice_bowl</span>';
+        case '麵': return '<span class="material-symbols-outlined text-[18px]">ramen_dining</span>';
+        case '湯': return '<span class="material-symbols-outlined text-[18px]">soup_kitchen</span>';
+        case '粥': return '<span class="material-symbols-outlined text-[18px]">breakfast_dining</span>';
+        case '麵包': return '<span class="material-symbols-outlined text-[18px]">bakery_dining</span>';
+        case '甜品': return '<span class="material-symbols-outlined text-[18px]">icecream</span>';
+        default: return '<span class="material-symbols-outlined text-[18px]">grid_view</span>';
+      }
+    }
+
+    // SEARCH & FILTER LOGIC
+    function getFilteredRecipes() {
+      let result = recipes.filter(r => {
+        const matchesCategory = selectedCategory === "全部" || r.category === selectedCategory;
+        const matchesQuery = !searchQuery || 
+          r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          r.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          r.ingredients.some(i => i.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        return matchesCategory && matchesQuery;
+      });
+
+      if (sortOption === "time") result.sort((a, b) => a.time - b.time);
+      else if (sortOption === "likes") result.sort((a, b) => b.likes - a.likes);
+      return result;
+    }
+
+    // RENDER MAIN RECIPE BENTO GRID
+    function renderRecipes() {
+      const grid = document.getElementById("recipe-grid");
+      const filtered = getFilteredRecipes();
+
+      document.getElementById("recipe-count-badge").innerText = `${filtered.length} 道食譜`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 flex flex-col items-center justify-center text-center text-on-surface-variant bg-surface-container-low/50 rounded-3xl border border-dashed border-secondary-container">
+            <span class="material-symbols-outlined text-5xl text-outline-variant mb-2">soup_kitchen</span>
+            <p class="font-medium text-lg">沒有找到相關食譜</p>
+            <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-primary text-on-primary rounded-full text-xs font-medium">重置搜尋</button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map((r, index) => {
+        const isFav = favorites.has(r.id);
+        const inCart = shoppingListRecipeIds.has(r.id);
+        const isFeatured = index === 0;
+
+        return `
+          <article onclick="openRecipeModal('${r.id}')" class="${isFeatured ? 'col-span-1 md:col-span-2 relative h-[320px] md:h-[380px]' : 'relative h-[280px] md:h-[380px]'} rounded-3xl overflow-hidden shadow-ambient group cursor-pointer border border-secondary-container/20">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="${r.image}" alt="${r.title}">
+            <div class="absolute inset-0 bg-gradient-to-t from-on-background/85 via-on-background/20 to-transparent"></div>
+            
+            <div class="absolute top-4 left-4 flex flex-wrap gap-1.5">
+              ${r.tags.map(t => `<span class="px-2.5 py-1 bg-secondary-container/90 backdrop-blur-md text-on-secondary-container rounded-lg font-medium text-xs shadow-xs">${t}</span>`).join('')}
+            </div>
+
+            <div class="absolute top-4 right-4 flex items-center gap-2">
+              <button onclick="toggleCartFromCard(event, '${r.id}')" title="加入購物清單" class="w-9 h-9 rounded-full ${inCart ? 'bg-secondary text-white' : 'bg-surface-container-lowest/80 text-primary'} backdrop-blur-md flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+                <span class="material-symbols-outlined text-lg">${inCart ? 'shopping_bag' : 'add_shopping_cart'}</span>
+              </button>
+              <button onclick="toggleFavorite(event, '${r.id}')" title="收藏" class="w-9 h-9 rounded-full bg-surface-container-lowest/80 backdrop-blur-md text-primary flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+                <span class="material-symbols-outlined text-lg" style="${isFav ? "font-variation-settings: 'FILL' 1;" : ""}">${isFav ? 'favorite' : 'favorite_border'}</span>
+              </button>
+            </div>
+
+            <div class="absolute bottom-0 left-0 w-full p-5 text-white">
+              <h2 class="font-bold text-xl md:text-2xl mb-1 text-shadow tracking-tight">${r.title}</h2>
+              <div class="flex items-center gap-3 text-xs opacity-90 font-medium mt-2">
+                <span class="flex items-center gap-1 bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-full"><span class="material-symbols-outlined text-[15px]">schedule</span> ${r.time} 分鐘</span>
+                <span class="flex items-center gap-1 bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-full"><span class="material-symbols-outlined text-[15px]">person</span> ${r.servings || 2} 人份</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // TAB 2: SMART FRIDGE CLEARANCE SEARCH
+    function addFridgeChip(name) {
+      const input = document.getElementById("fridge-ingredients-input");
+      const current = input.value.trim();
+      if (!current.includes(name)) {
+        input.value = current ? `${current}, ${name}` : name;
+      }
+      searchFridgeRecipes();
+    }
+
+    function searchFridgeRecipes() {
+      const rawInput = document.getElementById("fridge-ingredients-input").value;
+      const userIngredients = rawInput.split(/,|\s+/).map(s => s.trim().toLowerCase()).filter(Boolean);
+
+      const header = document.getElementById("fridge-results-header");
+      const grid = document.getElementById("fridge-results-grid");
+      header.classList.remove("hidden");
+      header.classList.add("flex");
+
+      if (userIngredients.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center text-on-surface-variant bg-surface-container-low/40 rounded-3xl border border-dashed border-secondary-container">
+            請輸入食材名稱開始清冰箱搜尋
+          </div>
+        `;
+        document.getElementById("fridge-match-count").innerText = "找到 0 道可消耗食譜";
+        return;
+      }
+
+      // Calculate matches for each recipe
+      const matches = recipes.map(recipe => {
+        const recipeIngs = recipe.ingredients.map(i => i.name.toLowerCase());
+        let matchedCount = 0;
+        const matchedList = [];
+        const missingList = [];
+
+        userIngredients.forEach(uIng => {
+          if (recipeIngs.some(rIng => rIng.includes(uIng) || uIng.includes(rIng))) {
+            matchedCount++;
+            matchedList.push(uIng);
+          }
+        });
+
+        recipeIngs.forEach(rIng => {
+          if (!userIngredients.some(uIng => rIng.includes(uIng) || uIng.includes(rIng))) {
+            missingList.push(rIng);
+          }
+        });
+
+        const score = matchedCount;
+        return { recipe, score, matchedList, missingList };
+      }).filter(m => m.score > 0).sort((a, b) => b.score - a.score);
+
+      document.getElementById("fridge-match-count").innerText = `找到 ${matches.length} 道可消耗食譜`;
+
+      if (matches.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 text-center text-on-surface-variant bg-surface-container-low/40 rounded-3xl border border-dashed border-secondary-container">
+            <span class="material-symbols-outlined text-4xl text-outline-variant mb-2">no_food</span>
+            <p class="font-medium text-base">未找到包含指定食材的食譜</p>
+            <p class="text-xs text-outline mt-1">試著換個食材關鍵字（例如：西蘭花、豆腐、雞肉）</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = matches.map(m => {
+        const r = m.recipe;
+        return `
+          <div onclick="openRecipeModal('${r.id}')" class="bg-surface-container-lowest rounded-3xl border border-secondary-container/50 overflow-hidden shadow-ambient hover:shadow-ambient-lg transition-all cursor-pointer flex flex-col justify-between">
+            <div>
+              <div class="relative h-44">
+                <img src="${r.image}" class="w-full h-full object-cover">
+                <span class="absolute top-3 left-3 bg-primary text-on-primary font-bold text-xs px-3 py-1 rounded-full shadow-sm">
+                  ✨ 可消耗 ${m.score} 種食材
+                </span>
+              </div>
+              <div class="p-5">
+                <h3 class="font-bold text-lg text-on-surface mb-2">${r.title}</h3>
+                
+                <!-- Matched Ingredients -->
+                <div class="flex flex-wrap gap-1.5 mb-2">
+                  <span class="text-xs font-semibold text-primary">已有食材：</span>
+                  ${m.matchedList.map(i => `<span class="px-2 py-0.5 bg-tertiary-container/80 text-on-tertiary-container rounded-md text-[11px] font-medium">✓ ${i}</span>`).join('')}
+                </div>
+
+                <!-- Missing Ingredients -->
+                <div class="flex flex-wrap gap-1.5 text-xs text-on-surface-variant/80">
+                  <span class="text-xs font-semibold text-outline">需補材料：</span>
+                  <span class="line-clamp-1">${m.missingList.slice(0, 3).join(', ')}${m.missingList.length > 3 ? '...' : ''}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-surface-container-low/50 border-t border-surface-container-high/40 flex items-center justify-between text-xs font-medium text-primary">
+              <span>烹飪時間: ${r.time} 分鐘</span>
+              <span class="flex items-center gap-1">查看做法 <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // TAB 3: SMART SHOPPING LIST (智慧購物清單)
+    function toggleCartFromCard(e, id) {
+      e.stopPropagation();
+      if (shoppingListRecipeIds.has(id)) {
+        shoppingListRecipeIds.delete(id);
+      } else {
+        shoppingListRecipeIds.add(id);
+      }
+      localStorage.setItem("warm_kitchen_cart", JSON.stringify([...shoppingListRecipeIds]));
+      updateCartBadge();
+      renderRecipes();
+      if (!document.getElementById("tab-shopping-content").classList.contains("hidden")) {
+        renderShoppingList();
+      }
+    }
+
+    function toggleCartFromModal() {
+      if (!activeRecipe) return;
+      toggleCartFromCard(new Event('click'), activeRecipe.id);
+      updateModalCartBtn();
+    }
+
+    function updateModalCartBtn() {
+      if (!activeRecipe) return;
+      const inCart = shoppingListRecipeIds.has(activeRecipe.id);
+      const btn = document.getElementById("modal-cart-btn");
+      if (inCart) {
+        btn.className = "px-3.5 py-2 rounded-full bg-secondary text-white hover:bg-secondary/90 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-xs";
+        btn.innerHTML = '<span class="material-symbols-outlined text-base">shopping_bag</span> 已在購物清單';
+      } else {
+        btn.className = "px-3.5 py-2 rounded-full bg-primary-container text-on-primary-container hover:bg-primary-container/80 text-xs font-semibold flex items-center gap-1.5 transition-all";
+        btn.innerHTML = '<span class="material-symbols-outlined text-base">add_shopping_cart</span> 購物清單';
+      }
+    }
+
+    function updateCartBadge() {
+      const count = shoppingListRecipeIds.size;
+      const mb = document.getElementById("cart-badge-mobile");
+      const db = document.getElementById("cart-badge-desktop");
+
+      if (count > 0) {
+        mb.innerText = count; mb.classList.remove("hidden"); mb.classList.add("flex");
+        db.innerText = count; db.classList.remove("hidden");
+      } else {
+        mb.classList.add("hidden"); db.classList.add("hidden");
+      }
+    }
+
+    function renderShoppingList() {
+      const recipesPillsContainer = document.getElementById("shopping-recipes-pills");
+      const categoryContainer = document.getElementById("shopping-categories-container");
+
+      const selectedRecipes = recipes.filter(r => shoppingListRecipeIds.has(r.id));
+
+      if (selectedRecipes.length === 0) {
+        recipesPillsContainer.innerHTML = '<span class="text-xs text-outline">尚未選擇食譜</span>';
+        categoryContainer.innerHTML = `
+          <div class="col-span-full py-16 flex flex-col items-center justify-center text-center text-on-surface-variant bg-surface-container-low/40 rounded-3xl border border-dashed border-secondary-container">
+            <span class="material-symbols-outlined text-5xl text-outline-variant mb-2">shopping_cart</span>
+            <p class="font-medium text-base">購物清單目前是空的</p>
+            <p class="text-xs text-outline mt-1">點擊食譜卡片上的「購物車」圖示，自動為您匯整歸類買菜清單</p>
+            <button onclick="switchTab('home')" class="mt-4 px-4 py-2 bg-primary text-on-primary rounded-full text-xs font-medium">探索食譜</button>
+          </div>
+        `;
+        return;
+      }
+
+      // Render Selected Recipe Pills
+      recipesPillsContainer.innerHTML = selectedRecipes.map(r => `
+        <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-xs">
+          ${r.title}
+          <button onclick="toggleCartFromCard(event, '${r.id}')" class="hover:text-error transition-colors">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </span>
+      `).join('');
+
+      // Aggregate Ingredients & Categorize
+      const categorized = {
+        veg: { name: "🥬 蔬菜水果類", items: [] },
+        meat: { name: "🥩 肉類海鮮類", items: [] },
+        seasoning: { name: "🧂 調味醬料類", items: [] },
+        staple: { name: "🌾 米麵乾貨與其他", items: [] }
+      };
+
+      selectedRecipes.forEach(r => {
+        r.ingredients.forEach(ing => {
+          const catKey = classifyIngredientCategory(ing.name);
+          categorized[catKey].items.push({
+            name: ing.name,
+            amount: ing.amount,
+            recipeTitle: r.title
+          });
+        });
+      });
+
+      // Render Categorized Grid
+      categoryContainer.innerHTML = Object.keys(categorized).map(key => {
+        const cat = categorized[key];
+        if (cat.items.length === 0) return '';
+
+        return `
+          <div class="bg-surface-container-lowest p-5 rounded-3xl border border-secondary-container/40 flex flex-col gap-3 shadow-ambient">
+            <h4 class="font-bold text-sm text-primary border-b border-surface-container-high pb-2 flex items-center justify-between">
+              <span>${cat.name}</span>
+              <span class="text-xs font-normal text-outline">${cat.items.length} 項</span>
+            </h4>
+
+            <div class="flex flex-col gap-2">
+              ${cat.items.map((item, i) => `
+                <label class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer group">
+                  <input type="checkbox" onchange="toggleIngredientCheck(this)" class="mt-0.5 w-4 h-4 rounded text-primary focus:ring-primary-container border-outline-variant">
+                  <div class="flex-grow">
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-semibold text-on-surface group-has-[:checked]:line-through group-has-[:checked]:opacity-40 transition-all">${item.name}</span>
+                      <span class="text-[11px] text-on-surface-variant font-medium">${item.amount}</span>
+                    </div>
+                    <span class="text-[10px] text-outline block mt-0.5">來自：${item.recipeTitle}</span>
+                  </div>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function classifyIngredientCategory(name) {
+      const vegKeywords = ["西蘭花", "菜", "甜薯", "酪梨", "生菜", "櫛瓜", "彩椒", "蕃茄", "蒜", "洋蔥", "檸檬", "薑", "蔥", "菇", "蘿蔔"];
+      const meatKeywords = ["雞", "豬", "牛", "魚", "蝦", "肉", "翅", "鱸", "鯛", "鮭", "蟹", "蛤"];
+      const seasoningKeywords = ["油", "鹽", "糖", "醬油", "米酒", "白酒", "醋", "胡椒", "香草", "蜂蜜", "奶油", "芝麻"];
+
+      if (vegKeywords.some(k => name.includes(k))) return "veg";
+      if (meatKeywords.some(k => name.includes(k))) return "meat";
+      if (seasoningKeywords.some(k => name.includes(k))) return "seasoning";
+      return "staple";
+    }
+
+    function clearShoppingList() {
+      if (confirm("確定要清空智慧購物車嗎？")) {
+        shoppingListRecipeIds.clear();
+        localStorage.setItem("warm_kitchen_cart", JSON.stringify([]));
+        updateCartBadge();
+        renderShoppingList();
+      }
+    }
+
+    function copyShoppingListText() {
+      const selectedRecipes = recipes.filter(r => shoppingListRecipeIds.has(r.id));
+      if (selectedRecipes.length === 0) {
+        alert("購物車是空的，請先加入食譜。");
+        return;
+      }
+
+      let text = "🛒 暖心廚房 • 智慧買菜清單：\n";
+      selectedRecipes.forEach(r => {
+        text += `\n【${r.title}】\n`;
+        r.ingredients.forEach(i => {
+          text += `• ${i.name} (${i.amount})\n`;
+        });
+      });
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert("📋 買菜清單已成功複製到剪貼簿！可直接貼上傳送。");
+      }).catch(() => {
+        alert("複製失敗，請手動選擇複製。");
+      });
+    }
+
+    // DYNAMIC PORTIONS LOGIC
+    function changePortion(targetPortion) {
+      currentPortion = targetPortion;
+      updatePortionButtonsUI();
+      renderModalIngredientsWithPortion();
+    }
+
+    function updatePortionButtonsUI() {
+      [1, 2, 4, 6].forEach(p => {
+        const btn = document.getElementById(`btn-portion-${p}`);
+        if (btn) {
+          if (p === currentPortion) {
+            btn.className = "px-3 py-1 rounded-lg text-xs font-bold bg-primary text-on-primary shadow-xs";
+          } else {
+            btn.className = "px-3 py-1 rounded-lg text-xs font-medium text-on-surface-variant hover:bg-surface-container";
+          }
+        }
+      });
+      document.getElementById("current-portion-label").innerText = `(${currentPortion}人份)`;
+    }
+
+    function renderModalIngredientsWithPortion() {
+      if (!activeRecipe) return;
+      const baseServings = activeRecipe.servings || 2;
+      const scaleFactor = currentPortion / baseServings;
+
+      const ingredientsContainer = document.getElementById("modal-ingredients-list");
+      ingredientsContainer.innerHTML = activeRecipe.ingredients.map(ing => {
+        const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
+        return `
+          <label class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-lowest border border-secondary-container/20 hover:bg-surface-container/50 cursor-pointer transition-colors group">
+            <div class="flex items-center gap-2.5">
+              <input type="checkbox" onchange="toggleIngredientCheck(this)" class="w-4 h-4 rounded text-primary focus:ring-primary-container border-outline-variant">
+              <span class="text-sm text-on-surface group-has-[:checked]:line-through group-has-[:checked]:opacity-50 transition-all">${ing.name}</span>
+            </div>
+            <span class="text-xs text-primary font-bold bg-primary-container/30 px-2 py-0.5 rounded-md">${scaledAmount}</span>
+          </label>
+        `;
+      }).join('');
+    }
+
+    function scaleQuantityString(amountStr, factor) {
+      if (!amountStr || factor === 1) return amountStr;
+
+      return amountStr.replace(/(\d+(\.\d+)?|\d+\/\d+|半)/g, (match) => {
+        let num = 1;
+        if (match === '半') num = 0.5;
+        else if (match.includes('/')) {
+          const parts = match.split('/');
+          num = parseFloat(parts[0]) / parseFloat(parts[1]);
+        } else {
+          num = parseFloat(match);
+        }
+        const scaled = Math.round(num * factor * 10) / 10;
+        return scaled.toString();
+      });
+    }
+
+    // FAVORITES TAB RENDER
+    function renderFavorites() {
+      const grid = document.getElementById("favorites-grid");
+      const favRecipes = recipes.filter(r => favorites.has(r.id));
+
+      if (favRecipes.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 flex flex-col items-center justify-center text-center text-on-surface-variant bg-surface-container-low/40 rounded-3xl border border-dashed border-secondary-container">
+            <span class="material-symbols-outlined text-5xl text-outline-variant mb-2">favorite_border</span>
+            <p class="font-medium text-base">目前尚無收藏的食譜</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = favRecipes.map(r => `
+        <article onclick="openRecipeModal('${r.id}')" class="relative h-[280px] rounded-3xl overflow-hidden shadow-ambient group cursor-pointer">
+          <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="${r.image}" alt="${r.title}">
+          <div class="absolute inset-0 bg-gradient-to-t from-on-background/85 via-transparent to-transparent"></div>
+          
+          <button onclick="toggleFavorite(event, '${r.id}')" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-lowest/80 backdrop-blur-md text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">favorite</span>
+          </button>
+
+          <div class="absolute bottom-0 left-0 w-full p-5 text-white">
+            <h2 class="font-bold text-lg mb-1">${r.title}</h2>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    // NAVIGATION CONTROLS
+    function selectCategory(cat) {
+      selectedCategory = cat;
+      renderCategoryTags();
+      renderRecipes();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val.trim();
+      const clearBtn = document.getElementById("clear-search-btn");
+      if (searchQuery) clearBtn.classList.remove("hidden");
+      else clearBtn.classList.add("hidden");
+      renderRecipes();
+    }
+
+    function clearSearch() {
+      document.getElementById("search-input").value = "";
+      searchQuery = "";
+      document.getElementById("clear-search-btn").classList.add("hidden");
+      renderRecipes();
+    }
+
+    function resetFilters() {
+      selectedCategory = "全部";
+      clearSearch();
+      renderCategoryTags();
+      switchTab('home');
+    }
+
+    function handleSortChange(val) {
+      sortOption = val;
+      renderRecipes();
+    }
+
+    function toggleFavorite(e, id) {
+      e.stopPropagation();
+      if (favorites.has(id)) favorites.delete(id);
+      else favorites.add(id);
+      localStorage.setItem("warm_kitchen_favs", JSON.stringify([...favorites]));
+      updateFavCount();
+      renderRecipes();
+      if (!document.getElementById("tab-favorites-content").classList.contains("hidden")) {
+        renderFavorites();
+      }
+    }
+
+    function updateFavCount() {
+      document.getElementById("fav-count-badge").innerText = favorites.size;
+    }
+
+    // TAB SWITCHER
+    function switchTab(tab) {
+      const tabs = ['home', 'fridge', 'shopping', 'favorites'];
+      tabs.forEach(t => {
+        const content = document.getElementById(`tab-${t}-content`);
+        const desktopNav = document.getElementById(`nav-${t}`);
+        const mobileNav = document.getElementById(`mobile-nav-${t}`);
+
+        if (content) content.classList.add("hidden");
+        
+        if (desktopNav) {
+          desktopNav.className = "font-medium text-sm text-on-surface-variant flex items-center gap-2 hover:bg-surface-container-low px-4 py-2.5 rounded-full transition-all active:scale-95";
+        }
+        if (mobileNav) {
+          mobileNav.className = "flex flex-col items-center justify-center text-on-surface-variant hover:text-primary px-3 py-1 transition-all";
+        }
+      });
+
+      const activeContent = document.getElementById(`tab-${tab}-content`);
+      const activeDesktopNav = document.getElementById(`nav-${tab}`);
+      const activeMobileNav = document.getElementById(`mobile-nav-${tab}`);
+
+      if (activeContent) {
+        activeContent.classList.remove("hidden");
+        if (tab !== 'home') activeContent.classList.add("flex");
+      }
+
+      if (activeDesktopNav) {
+        activeDesktopNav.className = "font-medium text-sm text-primary flex items-center gap-2 bg-surface-container px-4 py-2.5 rounded-full transition-all active:scale-95 shadow-sm";
+      }
+      if (activeMobileNav) {
+        activeMobileNav.className = "flex flex-col items-center justify-center text-primary px-3 py-1 transition-all";
+      }
+
+      if (tab === 'shopping') renderShoppingList();
+      if (tab === 'favorites') renderFavorites();
+    }
+
+    // RECIPE MODAL LOGIC
+    function openRecipeModal(id) {
+      activeRecipe = recipes.find(r => r.id === id);
+      if (!activeRecipe) return;
+
+      currentPortion = activeRecipe.servings || 2;
+
+      document.getElementById("modal-category-badge").innerText = activeRecipe.category;
+      document.getElementById("modal-title").innerText = activeRecipe.title;
+      document.getElementById("modal-image").src = activeRecipe.image;
+      document.getElementById("modal-time").innerText = `${activeRecipe.time} 分鐘`;
+      document.getElementById("modal-difficulty").innerText = activeRecipe.difficulty || "簡單";
+      document.getElementById("modal-servings").innerText = `${activeRecipe.servings || 2} 人份`;
+
+      updateModalFavBtn();
+      updateModalCartBtn();
+      updatePortionButtonsUI();
+      renderModalIngredientsWithPortion();
+
+      // Render Steps
+      const stepsContainer = document.getElementById("modal-steps-list");
+      stepsContainer.innerHTML = activeRecipe.steps.map((step, idx) => `
+        <div class="flex gap-3 p-4 rounded-2xl bg-surface-container-low/60 border border-secondary-container/30 items-start">
+          <span class="w-6 h-6 rounded-full bg-primary-container text-on-primary-container text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+            ${idx + 1}
+          </span>
+          <p class="text-body-md text-on-surface leading-relaxed flex-grow">${step}</p>
+        </div>
+      `).join('');
+
+      // Render Notes
+      renderNotesForActiveRecipe();
+
+      document.getElementById("recipe-modal").classList.remove("hidden");
+      document.getElementById("recipe-modal").classList.add("flex");
+      document.body.style.overflow = "hidden";
+    }
+
+    // NOTES LOGIC
+    function renderNotesForActiveRecipe() {
+      if (!activeRecipe) return;
+      const notesList = recipeNotes[activeRecipe.id] || [];
+      const container = document.getElementById("modal-notes-list");
+      const badge = document.getElementById("notes-count-badge");
+      
+      badge.innerText = `${notesList.length} 條筆記`;
+
+      if (notesList.length === 0) {
+        container.innerHTML = `
+          <p class="text-xs text-outline italic py-2 text-center bg-surface-container-lowest rounded-xl border border-dashed border-secondary-container/40">
+            尚無筆記。寫下您的獨門烹飪經驗吧！
+          </p>
+        `;
+        return;
+      }
+
+      container.innerHTML = notesList.map((note, idx) => `
+        <div class="flex items-start justify-between gap-3 p-3 rounded-xl bg-surface-container-lowest border border-secondary-container/30 text-xs text-on-surface">
+          <div class="flex flex-col gap-0.5 flex-grow">
+            <span class="font-medium leading-relaxed">${note.text}</span>
+            <span class="text-[10px] text-outline">${note.date}</span>
+          </div>
+          <button onclick="deleteRecipeNote(${idx})" title="刪除筆記" class="text-outline hover:text-error transition-colors p-1 rounded-md">
+            <span class="material-symbols-outlined text-base">delete</span>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function saveRecipeNote() {
+      if (!activeRecipe) return;
+      const input = document.getElementById("new-note-input");
+      const text = input.value.trim();
+
+      if (!text) return;
+
+      if (!recipeNotes[activeRecipe.id]) {
+        recipeNotes[activeRecipe.id] = [];
+      }
+
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+      recipeNotes[activeRecipe.id].unshift({
+        id: "note_" + Date.now(),
+        text: text,
+        date: dateStr
+      });
+
+      localStorage.setItem("warm_kitchen_notes", JSON.stringify(recipeNotes));
+      input.value = "";
+      renderNotesForActiveRecipe();
+    }
+
+    function deleteRecipeNote(index) {
+      if (!activeRecipe || !recipeNotes[activeRecipe.id]) return;
+      
+      recipeNotes[activeRecipe.id].splice(index, 1);
+      if (recipeNotes[activeRecipe.id].length === 0) {
+        delete recipeNotes[activeRecipe.id];
+      }
+
+      localStorage.setItem("warm_kitchen_notes", JSON.stringify(recipeNotes));
+      renderNotesForActiveRecipe();
+    }
+
+    function closeModal() {
+      document.getElementById("recipe-modal").classList.add("hidden");
+      document.getElementById("recipe-modal").classList.remove("flex");
+      document.body.style.overflow = "auto";
+    }
+
+    function updateModalFavBtn() {
+      const isFav = favorites.has(activeRecipe.id);
+      const icon = document.getElementById("modal-fav-icon");
+      icon.innerText = isFav ? "favorite" : "favorite_border";
+      icon.style.fontVariationSettings = isFav ? "'FILL' 1" : "'FILL' 0";
+    }
+
+    function toggleModalFavorite() {
+      if (!activeRecipe) return;
+      toggleFavorite(new Event('click'), activeRecipe.id);
+      updateModalFavBtn();
+    }
+
+    function toggleIngredientCheck(checkbox) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.setValueAtTime(checkbox.checked ? 587.33 : 440, ctx.currentTime);
+        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.15);
+      } catch(e){}
+    }
+
+    // HANDS-FREE COOKING MODE
+    function startHandsFreeMode() {
+      if (!activeRecipe) return;
+      currentHandsFreeStep = 0;
+      updateHandsFreeView();
+
+      closeModal();
+      document.getElementById("handsfree-modal").classList.remove("hidden");
+      document.getElementById("handsfree-modal").classList.add("flex");
+    }
+
+    function closeHandsFreeMode() {
+      document.getElementById("handsfree-modal").classList.add("hidden");
+      document.getElementById("handsfree-modal").classList.remove("flex");
+      window.speechSynthesis.cancel();
+      resetTimer();
+    }
+
+    function updateHandsFreeView() {
+      document.getElementById("hf-title").innerText = activeRecipe.title;
+      document.getElementById("hf-current-step-num").innerText = currentHandsFreeStep + 1;
+      document.getElementById("hf-total-steps").innerText = activeRecipe.steps.length;
+      document.getElementById("hf-step-badge").innerText = currentHandsFreeStep + 1;
+      document.getElementById("hf-step-text").innerText = activeRecipe.steps[currentHandsFreeStep];
+
+      document.getElementById("hf-prev-btn").disabled = currentHandsFreeStep === 0;
+      const nextBtn = document.getElementById("hf-next-btn");
+      if (currentHandsFreeStep === activeRecipe.steps.length - 1) {
+        nextBtn.innerHTML = '完成烹飪 <span class="material-symbols-outlined">check_circle</span>';
+      } else {
+        nextBtn.innerHTML = '下一步 <span class="material-symbols-outlined">arrow_forward</span>';
+      }
+
+      const dotsContainer = document.getElementById("hf-dots");
+      dotsContainer.innerHTML = activeRecipe.steps.map((_, idx) => `
+        <span class="w-2.5 h-2.5 rounded-full transition-all ${idx === currentHandsFreeStep ? 'bg-primary w-6' : 'bg-surface-container-high'}"></span>
+      `).join('');
+    }
+
+    function nextStep() {
+      window.speechSynthesis.cancel();
+      if (currentHandsFreeStep < activeRecipe.steps.length - 1) {
+        currentHandsFreeStep++;
+        updateHandsFreeView();
+      } else {
+        closeHandsFreeMode();
+        alert("🎉 恭喜完成美食料理！祝您享用愉快。");
+      }
+    }
+
+    function prevStep() {
+      window.speechSynthesis.cancel();
+      if (currentHandsFreeStep > 0) {
+        currentHandsFreeStep--;
+        updateHandsFreeView();
+      }
+    }
+
+    function speakCurrentStep() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const text = activeRecipe.steps[currentHandsFreeStep];
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-TW';
+        utterance.rate = 0.95;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert("您的瀏覽器不支援語音朗讀功能");
+      }
+    }
+
+    // TIMER LOGIC
+    function toggleTimer() {
+      const btn = document.getElementById("timer-toggle-btn");
+      if (isTimerRunning) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        btn.innerText = "繼續";
+      } else {
+        isTimerRunning = true;
+        btn.innerText = "暫停";
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            btn.innerText = "開始";
+            playChimeSound();
+            alert("⏰ 叮！烹飪計時結束。");
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      timerSeconds = 180;
+      updateTimerDisplay();
+      document.getElementById("timer-toggle-btn").innerText = "開始";
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById("timer-display").innerText = 
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function playChimeSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.0);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 1.0);
+      } catch(e){}
+    }
+
+    // ADD & EDIT RECIPE MODAL LOGIC
+    function openAddModal() {
+      document.getElementById("edit-recipe-id").value = "";
+      document.getElementById("form-modal-title").innerHTML = '<span class="material-symbols-outlined">add_circle</span> 新增私房食譜';
+      document.getElementById("add-recipe-form").reset();
+      
+      // Reset Image Preview
+      uploadedImageBase64 = "";
+      document.getElementById("image-preview").src = "";
+      document.getElementById("image-preview").classList.add("hidden");
+      document.getElementById("image-placeholder-icon").classList.remove("hidden");
+      document.getElementById("image-placeholder-text").classList.remove("hidden");
+
+      document.getElementById("add-modal").classList.remove("hidden");
+      document.getElementById("add-modal").classList.add("flex");
+    }
+
+    function openEditRecipeModal() {
+      if (!activeRecipe) return;
+      closeModal();
+
+      document.getElementById("edit-recipe-id").value = activeRecipe.id;
+      document.getElementById("form-modal-title").innerHTML = '<span class="material-symbols-outlined">edit</span> 修改食譜';
+
+      document.getElementById("add-title").value = activeRecipe.title;
+      document.getElementById("add-category").value = activeRecipe.category;
+      document.getElementById("add-time").value = activeRecipe.time;
+      document.getElementById("add-servings").value = activeRecipe.servings || 2;
+
+      // Fill ingredients
+      const ingText = activeRecipe.ingredients.map(i => `${i.name} ${i.amount}`).join(', ');
+      document.getElementById("add-ingredients").value = ingText;
+
+      // Fill steps
+      document.getElementById("add-steps").value = activeRecipe.steps.join('\n');
+
+      // Set image preview
+      uploadedImageBase64 = activeRecipe.image;
+      const imgPreview = document.getElementById("image-preview");
+      imgPreview.src = activeRecipe.image;
+      imgPreview.classList.remove("hidden");
+      document.getElementById("image-placeholder-icon").classList.add("hidden");
+      document.getElementById("image-placeholder-text").classList.add("hidden");
+
+      document.getElementById("add-modal").classList.remove("hidden");
+      document.getElementById("add-modal").classList.add("flex");
+    }
+
+    function closeAddModal() {
+      document.getElementById("add-modal").classList.add("hidden");
+      document.getElementById("add-modal").classList.remove("flex");
+    }
+
+    // Photo Upload & Preview
+    function handleImageUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          uploadedImageBase64 = evt.target.result;
+          const imgPreview = document.getElementById("image-preview");
+          imgPreview.src = uploadedImageBase64;
+          imgPreview.classList.remove("hidden");
+          document.getElementById("image-placeholder-icon").classList.add("hidden");
+          document.getElementById("image-placeholder-text").classList.add("hidden");
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Speech-To-Text (STT) for Ingredients
+    function startSpeechRecognitionForIngredients() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const status = document.getElementById("stt-status");
+
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'zh-TW';
+        recognition.interimResults = false;
+
+        recognition.onstart = () => { status.classList.remove("hidden"); };
+        recognition.onend = () => { status.classList.add("hidden"); };
+
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          const textarea = document.getElementById("add-ingredients");
+          textarea.value = textarea.value ? `${textarea.value}, ${transcript}` : transcript;
+        };
+
+        recognition.start();
+      } else {
+        // Fallback simulation for unsupported browsers
+        status.classList.remove("hidden");
+        status.innerText = "語音範例模擬：輸入『西蘭花一棵、蒜頭三瓣、鹽一茶匙』";
+        setTimeout(() => {
+          const textarea = document.getElementById("add-ingredients");
+          const sample = "西蘭花 1棵, 蒜頭 3瓣, 鹽 1茶匙";
+          textarea.value = textarea.value ? `${textarea.value}, ${sample}` : sample;
+          status.classList.add("hidden");
+        }, 1200);
+      }
+    }
+
+    // SAVE OR UPDATE RECIPE
+    function saveCustomRecipe(e) {
+      e.preventDefault();
+      const editId = document.getElementById("edit-recipe-id").value;
+
+      const title = document.getElementById("add-title").value.trim();
+      const category = document.getElementById("add-category").value;
+      const time = parseInt(document.getElementById("add-time").value) || 15;
+      const servings = parseInt(document.getElementById("add-servings").value) || 2;
+      
+      const rawIngs = document.getElementById("add-ingredients").value.split(/,|\n/);
+      const rawSteps = document.getElementById("add-steps").value.split(/\n/);
+
+      const ingredients = rawIngs.map(i => i.trim()).filter(Boolean).map(i => {
+        const parts = i.split(/\s+/);
+        if (parts.length >= 2) {
+          return { name: parts[0], amount: parts.slice(1).join(' ') };
+        }
+        return { name: i, amount: "適量" };
+      });
+
+      const steps = rawSteps.map(s => s.trim()).filter(Boolean);
+
+      const defaultImg = "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80";
+
+      if (editId) {
+        // EDIT MODE
+        const recipeIdx = recipes.findIndex(r => r.id === editId);
+        if (recipeIdx !== -1) {
+          recipes[recipeIdx] = {
+            ...recipes[recipeIdx],
+            title,
+            category,
+            time,
+            servings,
+            image: uploadedImageBase64 || recipes[recipeIdx].image || defaultImg,
+            ingredients: ingredients.length ? ingredients : recipes[recipeIdx].ingredients,
+            steps: steps.length ? steps : recipes[recipeIdx].steps
+          };
+        }
+      } else {
+        // NEW RECIPE
+        const newRecipe = {
+          id: "custom_" + Date.now(),
+          title,
+          category,
+          tags: [`#${category}`, "#手作料理"],
+          time,
+          likes: 1,
+          servings,
+          difficulty: "簡單",
+          image: uploadedImageBase64 || defaultImg,
+          ingredients: ingredients.length ? ingredients : [{ name: "新鮮食材", amount: "適量" }],
+          steps: steps.length ? steps : ["按照食材備料並開火烹煮至熟透。"]
+        };
+        recipes.unshift(newRecipe);
+      }
+
+      localStorage.setItem("warm_kitchen_recipes", JSON.stringify(recipes));
+      renderRecipes();
+      closeAddModal();
+      document.getElementById("add-recipe-form").reset();
+      alert(editId ? "✏️ 食譜已成功修改更新！" : "🎉 私房食譜已成功新增！");
+    }
+
+    // VOICE SEARCH SIMULATION
+    function openMicVoiceSearch() {
+      document.getElementById("mic-dialog").classList.remove("hidden");
+      document.getElementById("mic-dialog").classList.add("flex");
+    }
+
+    function closeMicVoiceSearch() {
+      document.getElementById("mic-dialog").classList.add("hidden");
+      document.getElementById("mic-dialog").classList.remove("flex");
+    }
+
+    function simulateVoiceInput(keyword) {
+      closeMicVoiceSearch();
+      document.getElementById("search-input").value = keyword;
+      handleSearch(keyword);
+    }
+  </script>
+</body>
+</html>
