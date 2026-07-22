@@ -274,6 +274,13 @@
         <div id="shopping-recipes-pills" class="flex flex-wrap gap-2"></div>
       </div>
 
+      <div class="flex gap-2 bg-surface-container-lowest p-3 rounded-2xl border border-secondary-container/40 shadow-xs my-2">
+  <input type="text" id="custom-item-input" placeholder="手動加嘢" onkeyup="if(event.key==='Enter') addCustomShoppingItem()" class="flex-grow rounded-xl bg-surface-container-low border border-secondary-container/50 px-3.5 py-2 text-xs md:text-sm focus:ring-2 focus:ring-primary outline-none text-on-surface">
+  <button onclick="addCustomShoppingItem()" class="bg-primary text-on-primary text-xs font-semibold px-4 py-2 rounded-xl transition-all shrink-0 active:scale-95 flex items-center gap-1 shadow-xs">
+    <span class="material-symbols-outlined text-base">add</span> 加進清單
+  </button>
+</div>
+
       <div id="shopping-categories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md"></div>
     </div>
 
@@ -674,6 +681,7 @@
     let shoppingListRecipeIds = new Set();
     let recipeNotes = {};
     let checkedShoppingItems = new Set();
+    let customShoppingItems = [];
     let selectedCategory = "全部";
     let searchQuery = "";
     let sortOption = "default";
@@ -728,6 +736,9 @@
 
   const savedChecked = localStorage.getItem("warm_kitchen_checked_items");
   if (savedChecked) checkedShoppingItems = new Set(JSON.parse(savedChecked));
+
+  const savedCustom = localStorage.getItem("warm_kitchen_custom_items");
+  if (savedCustom) customShoppingItems = JSON.parse(savedCustom);
 
   updateFavCount();
   updateCartBadge();
@@ -1023,84 +1034,106 @@
     }
 
     function renderShoppingList() {
-      const recipesPillsContainer = document.getElementById("shopping-recipes-pills");
-      const categoryContainer = document.getElementById("shopping-categories-container");
+  const recipesPillsContainer = document.getElementById("shopping-recipes-pills");
+  const categoryContainer = document.getElementById("shopping-categories-container");
 
-      const selectedRecipes = recipes.filter(r => shoppingListRecipeIds.has(r.id));
+  const selectedRecipes = recipes.filter(r => shoppingListRecipeIds.has(r.id));
 
-      if (selectedRecipes.length === 0) {
-        recipesPillsContainer.innerHTML = '<span class="text-xs text-outline">尚未選擇食譜</span>';
-        categoryContainer.innerHTML = `
-          <div class="col-span-full py-16 flex flex-col items-center justify-center text-center text-on-surface-variant bg-surface-container-low/40 rounded-3xl border border-dashed border-secondary-container">
-            <span class="material-symbols-outlined text-5xl text-outline-variant mb-2">shopping_cart</span>
-            <p class="font-medium text-base">購物清單目前是空的</p>
-            <p class="text-xs text-outline mt-1">點擊食譜卡片上的「購物車」圖示，自動為您匯整歸類買菜清單</p>
-            <button onclick="switchTab('home')" class="mt-4 px-4 py-2 bg-primary text-on-primary rounded-full text-xs font-medium">探索食譜</button>
-          </div>
-        `;
-        return;
-      }
+  // 判斷是否兩者都為空
+  if (selectedRecipes.length === 0 && customShoppingItems.length === 0) {
+    recipesPillsContainer.innerHTML = '<span class="text-xs text-outline">尚未選擇食譜</span>';
+    categoryContainer.innerHTML = `
+      <div class="col-span-full py-16 flex flex-col items-center justify-center text-center text-on-surface-variant bg-surface-container-low/40 rounded-3xl border border-dashed border-secondary-container">
+        <span class="material-symbols-outlined text-5xl text-outline-variant mb-2">shopping_cart</span>
+        <p class="font-medium text-base">購物清單目前是空的</p>
+        <p class="text-xs text-outline mt-1">可點擊食譜卡片上的「購物車」圖示，或在上方手動輸入新增買菜項目</p>
+      </div>
+    `;
+    return;
+  }
 
-      recipesPillsContainer.innerHTML = selectedRecipes.map(r => `
-        <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-xs">
-          ${r.title}
-          <button onclick="toggleCartFromCard(event, '${r.id}')" class="hover:text-error transition-colors">
-            <span class="material-symbols-outlined text-sm">close</span>
-          </button>
-        </span>
-      `).join('');
+  recipesPillsContainer.innerHTML = selectedRecipes.map(r => `
+    <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-xs">
+      ${r.title}
+      <button onclick="toggleCartFromCard(event, '${r.id}')" class="hover:text-error transition-colors">
+        <span class="material-symbols-outlined text-sm">close</span>
+      </button>
+    </span>
+  `).join('');
 
-      const categorized = {
-        veg: { name: "🥬", items: [] },
-        meat: { name: "🥩", items: [] },
-        seasoning: { name: "🧂", items: [] },
-        staple: { name: "🌾", items: [] }
-      };
+  const categorized = {
+    veg: { name: "🥬 蔬菜水果類", items: [] },
+    meat: { name: "🥩 肉類海鮮類", items: [] },
+    seasoning: { name: "🧂 調味醬料類", items: [] },
+    staple: { name: "🌾 米麵乾貨與其他", items: [] }
+  };
 
-      selectedRecipes.forEach(r => {
-        (r.ingredients || []).forEach((ing, idx) => {
-          const catKey = classifyIngredientCategory(ing.name);
-          const itemKey = `${r.id}_${ing.name}_${idx}`; 
-          categorized[catKey].items.push({
-            key: itemKey,
-            name: ing.name,
-            amount: ing.amount,
-            recipeTitle: r.title
-          });
-        });
+  // 1. 放入食譜食材
+  selectedRecipes.forEach(r => {
+    (r.ingredients || []).forEach((ing, idx) => {
+      const catKey = classifyIngredientCategory(ing.name);
+      const itemKey = `${r.id}_${ing.name}_${idx}`; 
+      categorized[catKey].items.push({
+        key: itemKey,
+        name: ing.name,
+        amount: ing.amount,
+        recipeTitle: r.title,
+        isCustom: false
       });
-      
-      categoryContainer.innerHTML = Object.keys(categorized).map(key => {
-        const cat = categorized[key];
-        if (cat.items.length === 0) return '';
+    });
+  });
 
-        return `
-          <div class="bg-surface-container-lowest p-5 rounded-3xl border border-secondary-container/40 flex flex-col gap-3 shadow-ambient">
-            <h4 class="font-bold text-sm text-primary border-b border-surface-container-high pb-2 flex items-center justify-between">
-              <span>${cat.name}</span>
-              <span class="text-xs font-normal text-outline">${cat.items.length} 項</span>
-            </h4>
-            <div class="flex flex-col gap-2">
-              ${cat.items.map(item => {
-                const isChecked = checkedShoppingItems.has(item.key);
-                return `
-                  <label class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer group">
-                    <input type="checkbox" data-key="${item.key}" ${isChecked ? 'checked' : ''} onchange="toggleIngredientCheck(this)" class="mt-0.5 w-4 h-4 rounded text-primary focus:ring-primary-container border-outline-variant">
-                    <div class="flex-grow">
-                      <div class="flex items-center justify-between">
-                        <span class="text-xs font-semibold text-on-surface group-has-[:checked]:line-through group-has-[:checked]:opacity-40 transition-all">${item.name}</span>
-                        <span class="text-[11px] text-on-surface-variant font-medium">${item.amount}</span>
-                      </div>
-                      <span class="text-[10px] text-outline block mt-0.5">來自：${item.recipeTitle}</span>
+  // 2. 放入手動新增項目（自動分類）
+  customShoppingItems.forEach(item => {
+    const catKey = classifyIngredientCategory(item.name);
+    categorized[catKey].items.push({
+      key: item.id,
+      name: item.name,
+      amount: item.amount,
+      recipeTitle: "手動新增",
+      isCustom: true,
+      rawId: item.id
+    });
+  });
+
+  categoryContainer.innerHTML = Object.keys(categorized).map(key => {
+    const cat = categorized[key];
+    if (cat.items.length === 0) return '';
+
+    return `
+      <div class="bg-surface-container-lowest p-5 rounded-3xl border border-secondary-container/40 flex flex-col gap-3 shadow-ambient">
+        <h4 class="font-bold text-sm text-primary border-b border-surface-container-high pb-2 flex items-center justify-between">
+          <span>${cat.name}</span>
+          <span class="text-xs font-normal text-outline">${cat.items.length} 項</span>
+        </h4>
+        <div class="flex flex-col gap-2">
+          ${cat.items.map(item => {
+            const isChecked = checkedShoppingItems.has(item.key);
+            return `
+              <label class="flex items-start gap-2.5 p-2 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer group">
+                <input type="checkbox" data-key="${item.key}" ${isChecked ? 'checked' : ''} onchange="toggleIngredientCheck(this)" class="mt-0.5 w-4 h-4 rounded text-primary focus:ring-primary-container border-outline-variant shrink-0">
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-on-surface group-has-[:checked]:line-through group-has-[:checked]:opacity-40 transition-all">${item.name}</span>
+                    <div class="flex items-center gap-1 shrink-0">
+                      <span class="text-[11px] text-on-surface-variant font-medium">${item.amount}</span>
+                      ${item.isCustom ? `
+                        <button onclick="event.preventDefault(); deleteCustomShoppingItem('${item.rawId}')" class="text-outline hover:text-error transition-colors p-0.5 ml-1">
+                          <span class="material-symbols-outlined text-sm">delete</span>
+                        </button>
+                      ` : ''}
                     </div>
-                  </label>
-                `;
-              }).join('')}
-            </div>
-            </div>
-        `;
-      }).join('');
-    }
+                  </div>
+                  <span class="text-[10px] text-outline block mt-0.5">來自：${item.recipeTitle}</span>
+                </div>
+              </label>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
 
     function classifyIngredientCategory(name) {
   const vegKeywords = ["西蘭花", "菜", "番薯", "牛油果", "生菜", "翠玉瓜", "燈籠椒", "番茄", "蒜", "洋蔥", "檸檬", "薑", "蔥", "菇", "蘿蔔", "菜心", "芥蘭", "菠菜", "黃芽白", "金菇", "矮瓜", "節瓜", "青瓜", "薯仔", "粟米", "豆苗", "芫荽"];
