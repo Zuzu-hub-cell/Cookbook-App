@@ -593,7 +593,7 @@
       recipesRef = db.ref("recipes");
       isFirebaseConnected = true;
     } catch(err) {
-      console.warn("Firebase 初始化避險警報：轉用本地儲存模式", err);
+      console.error("Firebase 初始化失敗:", err);
     }
 
     const defaultRecipes = [
@@ -692,6 +692,7 @@
 
     const categories = ["全部", "餸菜", "飯", "麵", "湯", "粥", "麵包", "甜品"];
 
+    // 實時連線 Firebase，完全摒棄 LocalStorage 讀取
     if (isFirebaseConnected && recipesRef) {
       recipesRef.on("value", (snapshot) => {
         const data = snapshot.val();
@@ -707,18 +708,9 @@
         renderCategoryTags();
         renderRecipes();
       }, (error) => {
-        console.warn("Firebase 權限或網絡異常，轉用本地儲存:", error);
-        loadFromLocalStorage();
+        console.error("Firebase 讀取數據失敗:", error);
+        alert("❌ 連接 Firebase 失敗，請檢查資料庫安全規則（Security Rules）。");
       });
-    } else {
-      loadFromLocalStorage();
-    }
-
-    function loadFromLocalStorage() {
-      const saved = localStorage.getItem("warm_kitchen_recipes");
-      recipes = saved ? JSON.parse(saved) : defaultRecipes;
-      renderCategoryTags();
-      renderRecipes();
     }
 
     function uploadDefaultRecipes() {
@@ -1571,7 +1563,6 @@
       document.getElementById("add-modal").classList.remove("flex");
     }
 
-    // 直接上載並進行輕量自動壓縮（無裁切彈窗）
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (file) {
@@ -1579,7 +1570,6 @@
         reader.onload = function(evt) {
           const img = new Image();
           img.onload = function() {
-            // 自動壓縮比例 Canvas
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
             
@@ -1591,7 +1581,6 @@
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             uploadedImageBase64 = canvas.toDataURL("image/jpeg", 0.75);
 
-            // 直接更新圖像預覽
             const imgPreview = document.getElementById("image-preview");
             imgPreview.src = uploadedImageBase64;
             imgPreview.classList.remove("hidden");
@@ -1604,7 +1593,7 @@
       }
     }
 
-    // 重構後的儲存邏輯：確保先寫入 LocalStorage 與更新 UI，再非同步嘗試 Firebase 同步
+    // 完全直連 Firebase 儲存邏輯 (不經 LocalStorage)
     async function saveCustomRecipe(e) {
       e.preventDefault();
       const editId = document.getElementById("edit-recipe-id").value;
@@ -1629,7 +1618,13 @@
       const steps = rawSteps.map(s => s.trim()).filter(Boolean);
       const defaultImg = "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80";
 
-      const targetId = editId || ("custom_" + Date.now());
+      if (!isFirebaseConnected || !recipesRef) {
+        alert("❌ 未能連接 Firebase，無法儲存食譜。");
+        return;
+      }
+
+      // 若是新食譜，向 Firebase 取得新 Key，否則使用原 editId
+      const targetId = editId || recipesRef.push().key;
 
       const recipeData = {
         id: targetId,
@@ -1645,39 +1640,15 @@
         steps: steps.length ? steps : ["按照食材備料並開火烹煮至熟透。"]
       };
 
-      // 1. 強制寫入本地 LocalStorage 並刷新前端畫面 (完全防流失)
-      saveRecipeLocally(editId, recipeData);
-
-      // 2. 試圖同步至 Firebase 雲端
-      if (isFirebaseConnected && recipesRef) {
-        try {
-          if (editId) {
-            await recipesRef.child(editId).update(recipeData);
-          } else {
-            await recipesRef.child(targetId).set(recipeData);
-          }
-          alert("🎉 食譜已成功儲存並同步至雲端！");
-        } catch (err) {
-          console.warn("Firebase 寫入失敗 (權限限制或斷線)，已儲存於本機 LocalStorage:", err);
-          alert("🎉 食譜已成功儲存於本機裝置！");
-        }
-      } else {
-        alert("🎉 食譜已成功儲存於本機裝置！");
+      try {
+        await recipesRef.child(targetId).set(recipeData);
+        alert(editId ? "✏️ 食譜已成功更新至 Firebase！" : "🎉 私房食譜已成功新增至 Firebase！");
+        closeAddModal();
+        document.getElementById("add-recipe-form").reset();
+      } catch (err) {
+        console.error("Firebase 寫入失敗:", err);
+        alert(`❌ Firebase 儲存失敗：${err.message}\n請確認 Firebase Console 內的 Realtime Database Security Rules 已設置許可！`);
       }
-
-      closeAddModal();
-      document.getElementById("add-recipe-form").reset();
-    }
-
-    function saveRecipeLocally(editId, recipeData) {
-      if (editId) {
-        const idx = recipes.findIndex(r => r.id === editId);
-        if (idx !== -1) recipes[idx] = recipeData;
-      } else {
-        recipes.unshift(recipeData);
-      }
-      localStorage.setItem("warm_kitchen_recipes", JSON.stringify(recipes));
-      renderRecipes();
     }
 
     function openMicVoiceSearch() {
