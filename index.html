@@ -1657,42 +1657,63 @@
       }
     }
     async function shareRecipeAsImage() {
-      if (!activeRecipe) return;
+  if (!activeRecipe) return;
 
-      const modalCard = document.querySelector("#recipe-modal > div");
-      const headerActions = modalCard.querySelector(".sticky");
-      const noteInputArea = document.querySelector("#new-note-input")?.parentElement;
+  const modalContainer = document.getElementById("recipe-modal");
+  const modalCard = document.querySelector("#recipe-modal > div");
+  const headerActions = modalCard.querySelector(".sticky"); // 頂部按鈕列
+  const cookBanner = modalCard.querySelector(".from-primary-container\\/80")?.parentElement; // 開始煮飯 Banner
+  const noteInputArea = document.querySelector("#new-note-input")?.parentElement; // 筆記輸入框
 
-      try {
-        if (headerActions) headerActions.style.display = 'none';
-        if (noteInputArea) noteInputArea.style.display = 'none';
+  try {
+    // 1. 暫時隱藏不必要的按鈕與互動區塊
+    if (headerActions) headerActions.style.display = 'none';
+    if (cookBanner) cookBanner.style.display = 'none';
+    if (noteInputArea) noteInputArea.style.display = 'none';
 
-        const canvas = await html2canvas(modalCard, {
-          useCORS: true,
-          scale: 2,
-          backgroundColor: "#faf8f5",
-          scrollY: -window.scrollY
-        });
+    // 2. 暫時移除卡片的最大高度限制與捲軸，讓內容完全展開
+    const originalMaxHeight = modalCard.style.maxHeight;
+    const originalOverflow = modalCard.style.overflowY;
+    modalCard.style.maxHeight = 'none';
+    modalCard.style.overflowY = 'visible';
 
-        if (headerActions) headerActions.style.display = '';
-        if (noteInputArea) noteInputArea.style.display = '';
+    // 3. 執行截圖
+    const canvas = await html2canvas(modalCard, {
+      useCORS: true,
+      scale: 2,
+      backgroundColor: "#faf8f5",
+      windowWidth: modalCard.scrollWidth,
+      windowHeight: modalCard.scrollHeight
+    });
 
-        const imageUri = canvas.toDataURL("image/png");
-        const link = document.createElement("a");
-        link.download = `陳家食譜_${activeRecipe.title}.png`;
-        link.href = imageUri;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    // 4. 恢復原狀
+    modalCard.style.maxHeight = originalMaxHeight;
+    modalCard.style.overflowY = originalOverflow;
+    if (headerActions) headerActions.style.display = '';
+    if (cookBanner) cookBanner.style.display = '';
+    if (noteInputArea) noteInputArea.style.display = '';
 
-      } catch (err) {
-        console.error("產生食譜圖片失敗:", err);
-        alert("❌ 產生圖片失敗，若圖片為外部圖片可能受 CORS 限制。");
-        
-        if (headerActions) headerActions.style.display = '';
-        if (noteInputArea) noteInputArea.style.display = '';
-      }
-    }
+    // 5. 下載圖片
+    const imageUri = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.download = `陳家食譜_${activeRecipe.title}.png`;
+    link.href = imageUri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  } catch (err) {
+    console.error("產生食譜圖片失敗:", err);
+    alert("❌ 產生圖片失敗，請再試一次。");
+    
+    // 確保發生錯誤時也能恢復介面
+    modalCard.style.maxHeight = '';
+    modalCard.style.overflowY = '';
+    if (headerActions) headerActions.style.display = '';
+    if (cookBanner) cookBanner.style.display = '';
+    if (noteInputArea) noteInputArea.style.display = '';
+  }
+}
   </script>
 </body>
 </html>
