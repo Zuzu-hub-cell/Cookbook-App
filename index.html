@@ -470,17 +470,18 @@
       </div>
     </div>
 
-    <div class="p-5 pb-8 md:p-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-between max-w-4xl mx-auto w-full gap-3">
-  <button onclick="prevStep()" id="hf-prev-btn" class="flex-1 max-w-[160px] py-4 rounded-2xl bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-base md:text-lg flex items-center justify-center gap-2 shrink-0 disabled:opacity-30 active:scale-95 transition-all shadow-sm">
-    <span class="material-symbols-outlined text-2xl">arrow_back</span> 上一步
+    <div class="p-4 pb-8 md:p-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-between max-w-4xl mx-auto w-full gap-2">
+  <button onclick="prevStep()" id="hf-prev-btn" class="px-4 py-3.5 rounded-2xl bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-sm md:text-base flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap disabled:opacity-30 active:scale-95 transition-all shadow-sm">
+    <span class="material-symbols-outlined text-xl shrink-0">arrow_back</span>
+    <span class="whitespace-nowrap">上一步</span>
   </button>
 
-  <div class="flex items-center justify-center gap-1.5 flex-grow overflow-x-auto no-scrollbar px-1" id="hf-dots"></div>
+  <div class="flex items-center justify-center gap-1 flex-1 min-w-0 overflow-x-auto no-scrollbar px-1 py-2" id="hf-dots"></div>
 
-  <button onclick="nextStep()" id="hf-next-btn" class="flex-1 max-w-[160px] py-4 rounded-2xl bg-primary text-on-primary hover:bg-primary/90 font-bold text-base md:text-lg flex items-center justify-center gap-2 shrink-0 shadow-md active:scale-95 whitespace-nowrap transition-all">
-    下一步 <span class="material-symbols-outlined text-2xl">arrow_forward</span>
+  <button onclick="nextStep()" id="hf-next-btn" class="px-4 py-3.5 rounded-2xl bg-primary text-on-primary hover:bg-primary/90 font-bold text-sm md:text-base flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap shadow-md active:scale-95 transition-all">
+    <span class="whitespace-nowrap">下一步</span>
+    <span class="material-symbols-outlined text-xl shrink-0">arrow_forward</span>
   </button>
-</div>
 </div>
   
   <div id="add-modal" class="fixed inset-0 z-50 bg-on-background/50 backdrop-blur-sm hidden items-center justify-center p-3 md:p-6 overflow-y-auto">
