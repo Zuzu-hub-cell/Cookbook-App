@@ -10,6 +10,7 @@
   <link rel="manifest" href="manifest.json" id="main-manifest">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <!-- Firebase SDK (Compat 模式) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -315,7 +316,10 @@
           <button id="modal-cart-btn" onclick="toggleCartFromModal()" class="px-3.5 py-2 rounded-full bg-primary-container text-on-primary-container hover:bg-primary-container/80 text-xs font-semibold flex items-center gap-1.5 transition-all">
             <span class="material-symbols-outlined text-base">add_shopping_cart</span> 購物清單
           </button>
-          <button onclick="openEditRecipeModal()" title="修改/編輯食譜" class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors">
+          <button onclick="shareRecipeAsImage()" title="分享/下載食譜圖片" class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-primary flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-xl">share</span>
+          </button>
+          <button onclick="openEditRecipeModal()" title="編輯食譜" class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors">
             <span class="material-symbols-outlined text-xl">edit</span>
           </button>
           <!-- 1. 新增刪除食譜按鈕 -->
@@ -1650,6 +1654,43 @@
       } catch (err) {
         console.error("Firebase 寫入失敗:", err);
         alert(`❌ Firebase 儲存失敗：${err.message}`);
+      }
+    }
+    async function shareRecipeAsImage() {
+      if (!activeRecipe) return;
+
+      const modalCard = document.querySelector("#recipe-modal > div");
+      const headerActions = modalCard.querySelector(".sticky");
+      const noteInputArea = document.querySelector("#new-note-input")?.parentElement;
+
+      try {
+        if (headerActions) headerActions.style.display = 'none';
+        if (noteInputArea) noteInputArea.style.display = 'none';
+
+        const canvas = await html2canvas(modalCard, {
+          useCORS: true,
+          scale: 2,
+          backgroundColor: "#faf8f5",
+          scrollY: -window.scrollY
+        });
+
+        if (headerActions) headerActions.style.display = '';
+        if (noteInputArea) noteInputArea.style.display = '';
+
+        const imageUri = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.download = `陳家食譜_${activeRecipe.title}.png`;
+        link.href = imageUri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+      } catch (err) {
+        console.error("產生食譜圖片失敗:", err);
+        alert("❌ 產生圖片失敗，若圖片為外部圖片可能受 CORS 限制。");
+        
+        if (headerActions) headerActions.style.display = '';
+        if (noteInputArea) noteInputArea.style.display = '';
       }
     }
   </script>
