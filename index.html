@@ -482,11 +482,11 @@
 
         <div>
           <label class="block text-xs font-semibold text-on-surface-variant mb-1">食譜名稱 *</label>
-          <input type="text" id="add-title" required placeholder="例如：西蘭花炒蒜香雞肉" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+          <input type="text" id="add-title" required placeholder="例如：紅燒肥秋香" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-on-surface-variant mb-1">食譜照片（可上傳或拍照）</label>
+          <label class="block text-xs font-semibold text-on-surface-variant mb-1">食譜照片</label>
           <div class="flex items-center gap-4">
             <div class="relative w-24 h-24 rounded-2xl bg-surface-container-low border border-dashed border-secondary-container flex flex-col items-center justify-center text-on-surface-variant overflow-hidden shrink-0">
               <img id="image-preview" src="" class="hidden w-full h-full object-cover">
@@ -498,7 +498,6 @@
                 <span class="material-symbols-outlined text-base">upload</span> 上傳 / 拍攝照片
                 <input type="file" id="add-image-file" accept="image/*" onchange="handleImageUpload(event)" class="hidden">
               </label>
-              <p class="text-[11px] text-outline">可上傳成品照或圖片</p>
             </div>
           </div>
         </div>
@@ -1514,7 +1513,7 @@
 
     function openAddModal() {
       document.getElementById("edit-recipe-id").value = "";
-      document.getElementById("form-modal-title").innerHTML = '<span class="material-symbols-outlined">add_circle</span> 新增私房食譜';
+      document.getElementById("form-modal-title").innerHTML = '<span class="material-symbols-outlined">add_circle</span> 新增陳家食譜';
       document.getElementById("add-recipe-form").reset();
       
       uploadedImageBase64 = "";
