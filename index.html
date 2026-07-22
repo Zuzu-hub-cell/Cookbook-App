@@ -178,26 +178,26 @@
           <span class="text-xs text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full font-medium" id="recipe-count-badge">0 道食譜</span>
         </div>
         <div class="flex items-center gap-1 text-xs text-on-surface-variant">
-  <span>排序：</span>
-  <select id="sort-select" onchange="handleSortChange(this.value)" class="bg-surface-container-low border-none rounded-lg text-xs font-medium py-1 pl-2 pr-6 focus:ring-1 focus:ring-primary text-on-surface">
-    <option value="default">預設推薦</option>
-    <option value="time">烹飪時間 (由短至長)</option>
-  </select>
-  <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl ml-2">
-    <button onclick="changeViewMode('grid')" id="view-btn-grid" title="雙排網格" class="p-1 rounded-lg text-primary bg-surface-container-lowest shadow-xs">
-      <span class="material-symbols-outlined text-[18px]">grid_view</span>
-    </button>
-    <button onclick="changeViewMode('large')" id="view-btn-large" title="大圖模式" class="p-1 rounded-lg text-on-surface-variant hover:text-primary">
-      <span class="material-symbols-outlined text-[18px]">view_agenda</span>
-    </button>
-    <button onclick="changeViewMode('list')" id="view-btn-list" title="列表模式" class="p-1 rounded-lg text-on-surface-variant hover:text-primary">
-      <span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
-    </button>
-  </div>
-</div>
-      
+          <span>排序：</span>
+          <select id="sort-select" onchange="handleSortChange(this.value)" class="bg-surface-container-low border-none rounded-lg text-xs font-medium py-1 pl-2 pr-6 focus:ring-1 focus:ring-primary text-on-surface">
+            <option value="default">預設推薦</option>
+            <option value="time">烹飪時間 (由短至長)</option>
+          </select>
+          <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl ml-2">
+            <button onclick="changeViewMode('grid')" id="view-btn-grid" title="雙排網格" class="p-1 rounded-lg text-primary bg-surface-container-lowest shadow-xs">
+              <span class="material-symbols-outlined text-[18px]">grid_view</span>
+            </button>
+            <button onclick="changeViewMode('large')" id="view-btn-large" title="大圖模式" class="p-1 rounded-lg text-on-surface-variant hover:text-primary">
+              <span class="material-symbols-outlined text-[18px]">view_agenda</span>
+            </button>
+            <button onclick="changeViewMode('list')" id="view-btn-list" title="列表模式" class="p-1 rounded-lg text-on-surface-variant hover:text-primary">
+              <span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
-      <section id="recipe-grid" class="grid grid-cols-1 md:grid-cols-3 gap-md min-h-[300px]"></section>
+      <section id="recipe-grid" class="grid grid-cols-2 md:grid-cols-3 gap-md min-h-[300px]"></section>
     </div>
 
     <!-- TAB 2: SMART FRIDGE CLEARANCE -->
@@ -333,7 +333,6 @@
           <button onclick="openEditRecipeModal()" title="編輯食譜" class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors">
             <span class="material-symbols-outlined text-xl">edit</span>
           </button>
-          <!-- 1. 新增刪除食譜按鈕 -->
           <button onclick="deleteCurrentRecipe()" title="刪除食譜" class="w-10 h-10 rounded-full bg-error/10 hover:bg-error/20 text-error flex items-center justify-center transition-colors">
             <span class="material-symbols-outlined text-xl">delete</span>
           </button>
@@ -377,7 +376,6 @@
             <span class="text-xs font-semibold text-primary flex items-center gap-1">
               <span class="material-symbols-outlined text-base">groups</span> 份量縮放：
             </span>
-            <!-- 3. 份量縮放改為自己輸入數字 -->
             <div class="flex items-center gap-1.5 bg-surface-container-lowest px-3 py-1.5 rounded-xl border border-secondary-container/30">
               <label for="portion-input" class="text-xs text-on-surface-variant font-medium">調整為</label>
               <input type="number" id="portion-input" min="1" max="99" value="2" onchange="onPortionInputChange(this.value)" class="w-16 h-8 text-center bg-surface-container-low border border-secondary-container/50 rounded-lg text-xs font-bold text-primary outline-none focus:ring-1 focus:ring-primary">
@@ -456,7 +454,6 @@
       <div class="w-16 h-16 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center text-2xl font-bold mb-6 shadow-sm" id="hf-step-badge">1</div>
       <p id="hf-step-text" class="text-2xl md:text-3xl font-medium leading-relaxed text-on-surface tracking-wide mb-8">載入中...</p>
 
-      <!-- 4. 開始煮飯模式功能修改：刪除朗讀、自訂設定時間 -->
       <div class="flex flex-wrap items-center justify-center gap-4 my-4">
         <div class="flex items-center gap-2 bg-surface-container-high px-4 py-2.5 rounded-full shadow-xs">
           <span class="material-symbols-outlined text-primary">timer</span>
@@ -683,7 +680,7 @@
     let timerInterval = null;
     let timerSeconds = 180;
     let isTimerRunning = false;
-    let wakeLock = null; // 用於保持螢幕不休眠
+    let wakeLock = null;
 
     const categories = ["全部", "餸菜", "飯", "麵", "湯", "粥", "麵包", "甜品"];
 
@@ -802,13 +799,11 @@
         return;
       }
 
-      // 根據 viewMode 設定外層容器網格
       if (viewMode === 'large') {
         grid.className = "grid grid-cols-1 gap-md min-h-[300px]";
       } else if (viewMode === 'list') {
         grid.className = "flex flex-col gap-sm min-h-[300px]";
       } else {
-        // 雙排網格預設
         grid.className = "grid grid-cols-2 md:grid-cols-3 gap-md min-h-[300px]";
       }
 
@@ -816,7 +811,6 @@
         const isFav = favorites.has(r.id);
         const inCart = shoppingListRecipeIds.has(r.id);
 
-        // 1. 列表模式 (精簡橫條)
         if (viewMode === 'list') {
           return `
             <article onclick="openRecipeModal('${r.id}')" class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-2xl border border-secondary-container/20 shadow-xs cursor-pointer hover:bg-surface-container-low/50 transition-all">
@@ -843,7 +837,6 @@
           `;
         }
 
-        // 2. 卡片模式 (大圖 / 雙排網格)
         const cardHeight = viewMode === 'large' ? 'h-[260px] md:h-[340px]' : 'h-[180px] md:h-[260px]';
 
         return `
@@ -871,7 +864,7 @@
         `;
       }).join('');
     }
-    
+
     function addFridgeChip(name) {
       const input = document.getElementById("fridge-ingredients-input");
       const current = input.value.trim();
@@ -1132,7 +1125,6 @@
       });
     }
 
-    // 3. 份量縮放改成自己輸入數字
     function onPortionInputChange(val) {
       let num = parseInt(val);
       if (isNaN(num) || num < 1) num = 1;
@@ -1325,7 +1317,6 @@
       document.body.style.overflow = "hidden";
     }
 
-    // 1. 刪除食譜功能
     async function deleteCurrentRecipe() {
       if (!activeRecipe) return;
       if (confirm(`確定要刪除食譜「${activeRecipe.title}」嗎？此動作無法復原。`)) {
@@ -1333,7 +1324,6 @@
           try {
             await recipesRef.child(activeRecipe.id).remove();
             
-            // 清理本地狀態
             favorites.delete(activeRecipe.id);
             shoppingListRecipeIds.delete(activeRecipe.id);
             localStorage.setItem("warm_kitchen_favs", JSON.stringify([...favorites]));
@@ -1449,7 +1439,6 @@
       } catch(e){}
     }
 
-    // 4. 開始煮飯模式：螢幕防休眠 Wake Lock 啟用
     async function requestWakeLock() {
       try {
         if ('wakeLock' in navigator) {
@@ -1475,14 +1464,14 @@
       closeModal();
       document.getElementById("handsfree-modal").classList.remove("hidden");
       document.getElementById("handsfree-modal").classList.add("flex");
-      requestWakeLock(); // 啟用螢幕不休眠
+      requestWakeLock();
     }
 
     function closeHandsFreeMode() {
       document.getElementById("handsfree-modal").classList.add("hidden");
       document.getElementById("handsfree-modal").classList.remove("flex");
       resetTimer();
-      releaseWakeLock(); // 釋放螢幕常亮鎖，恢復正常休眠
+      releaseWakeLock();
     }
 
     function updateHandsFreeView() {
@@ -1523,7 +1512,6 @@
       }
     }
 
-    // 4. 自訂烹飪時間邏輯
     function updateTimerFromInput() {
       let min = parseInt(document.getElementById("timer-min-input").value) || 0;
       let sec = parseInt(document.getElementById("timer-sec-input").value) || 0;
@@ -1727,7 +1715,6 @@
       const baseServings = activeRecipe.servings || 2;
       const scaleFactor = currentPortion / baseServings;
 
-      // 1. 整理食材列表 (含份量換算)
       const ingredientsHtml = (activeRecipe.ingredients || []).map(ing => {
         const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
         return `
@@ -1738,7 +1725,6 @@
         `;
       }).join('');
 
-      // 2. 整理步驟列表
       const stepsHtml = (activeRecipe.steps || []).map((step, idx) => `
         <div style="display: flex; gap: 12px; padding: 12px; background: #f6f2ec; border-radius: 12px; align-items: flex-start;">
           <span style="background: #FCC8B2; color: #4a354b; font-weight: bold; width: 24px; min-width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">${idx + 1}</span>
@@ -1746,7 +1732,6 @@
         </div>
       `).join('');
 
-      // 3. 整理筆記列表
       const notesList = recipeNotes[activeRecipe.id] || [];
       const notesHtml = notesList.length > 0 ? `
         <div style="margin-top: 24px; background: #f0ebe3; padding: 16px; border-radius: 16px;">
@@ -1759,7 +1744,6 @@
         </div>
       ` : '';
 
-      // 4. 開啟新頁面
       const shareWindow = window.open('', '_blank');
       shareWindow.document.write(`
         <!DOCTYPE html>
@@ -1889,6 +1873,6 @@
         </html>
       `);
     }
-</script>
+  </script>
 </body>
 </html>
