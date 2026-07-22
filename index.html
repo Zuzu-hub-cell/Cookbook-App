@@ -1863,7 +1863,7 @@
             const topBackBtn = document.createElement("button");
             topBackBtn.className = "btn btn-secondary";
             topBackBtn.style.marginBottom = "10px";
-            topBackBtn.innerText = "↩️ 返回食譜";
+            topBackBtn.innerText = "↩️ 返回";
             topBackBtn.onclick = resetView;
 
             topBar.innerHTML = "";
@@ -1881,7 +1881,7 @@
             const bottomBackBtn = document.createElement("button");
             bottomBackBtn.className = "btn btn-secondary";
             bottomBackBtn.style.width = "100%";
-            bottomBackBtn.innerText = "↩️ 返回食譜";
+            bottomBackBtn.innerText = "↩️ 返回";
             bottomBackBtn.onclick = resetView;
             
             bottomBar.appendChild(bottomBackBtn);
@@ -1901,7 +1901,7 @@
           topBar.style.flexDirection = "row";
           topBar.innerHTML = \`
             <button class="btn" onclick="downloadImage()">📥 轉為長按儲存圖片</button>
-            <button class="btn btn-secondary" onclick="window.close()">↩️ 返回食譜</button>
+            <button class="btn btn-secondary" onclick="window.close()">↩️ 返回</button>
           \`;
 
           const bottomBar = document.getElementById("bottom-container");
