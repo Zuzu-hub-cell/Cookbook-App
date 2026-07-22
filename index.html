@@ -1604,7 +1604,8 @@
       }
     }
 
-    function saveCustomRecipe(e) {
+    // 重構後的儲存邏輯：確保先寫入 LocalStorage 與更新 UI，再非同步嘗試 Firebase 同步
+    async function saveCustomRecipe(e) {
       e.preventDefault();
       const editId = document.getElementById("edit-recipe-id").value;
 
@@ -1628,7 +1629,10 @@
       const steps = rawSteps.map(s => s.trim()).filter(Boolean);
       const defaultImg = "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80";
 
+      const targetId = editId || ("custom_" + Date.now());
+
       const recipeData = {
+        id: targetId,
         title,
         category,
         difficulty,
@@ -1641,26 +1645,24 @@
         steps: steps.length ? steps : ["按照食材備料並開火烹煮至熟透。"]
       };
 
+      // 1. 強制寫入本地 LocalStorage 並刷新前端畫面 (完全防流失)
+      saveRecipeLocally(editId, recipeData);
+
+      // 2. 試圖同步至 Firebase 雲端
       if (isFirebaseConnected && recipesRef) {
-        if (editId) {
-          recipesRef.child(editId).update(recipeData)
-            .then(() => alert("✏️ 食譜已成功修改並同步！"))
-            .catch((err) => {
-              console.error(err);
-              saveRecipeLocally(editId, recipeData);
-            });
-        } else {
-          const newRef = recipesRef.push();
-          recipeData.id = newRef.key;
-          newRef.set(recipeData)
-            .then(() => alert("🎉 私房食譜已成功新增並同步！"))
-            .catch((err) => {
-              console.error(err);
-              saveRecipeLocally(null, recipeData);
-            });
+        try {
+          if (editId) {
+            await recipesRef.child(editId).update(recipeData);
+          } else {
+            await recipesRef.child(targetId).set(recipeData);
+          }
+          alert("🎉 食譜已成功儲存並同步至雲端！");
+        } catch (err) {
+          console.warn("Firebase 寫入失敗 (權限限制或斷線)，已儲存於本機 LocalStorage:", err);
+          alert("🎉 食譜已成功儲存於本機裝置！");
         }
       } else {
-        saveRecipeLocally(editId, recipeData);
+        alert("🎉 食譜已成功儲存於本機裝置！");
       }
 
       closeAddModal();
@@ -1670,14 +1672,12 @@
     function saveRecipeLocally(editId, recipeData) {
       if (editId) {
         const idx = recipes.findIndex(r => r.id === editId);
-        if (idx !== -1) recipes[idx] = { ...recipeData, id: editId };
+        if (idx !== -1) recipes[idx] = recipeData;
       } else {
-        recipeData.id = "custom_" + Date.now();
         recipes.unshift(recipeData);
       }
       localStorage.setItem("warm_kitchen_recipes", JSON.stringify(recipes));
       renderRecipes();
-      alert("🎉 食譜已儲存於本機裝置！(請檢查 Firebase 權限以開啟跨裝置同步)");
     }
 
     function openMicVoiceSearch() {
