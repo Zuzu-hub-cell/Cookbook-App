@@ -178,13 +178,24 @@
           <span class="text-xs text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full font-medium" id="recipe-count-badge">0 道食譜</span>
         </div>
         <div class="flex items-center gap-1 text-xs text-on-surface-variant">
-          <span>排序：</span>
-          <select id="sort-select" onchange="handleSortChange(this.value)" class="bg-surface-container-low border-none rounded-lg text-xs font-medium py-1 pl-2 pr-6 focus:ring-1 focus:ring-primary text-on-surface">
-            <option value="default">預設推薦</option>
-            <option value="time">烹飪時間 (由短至長)</option>
-          </select>
-        </div>
-      </div>
+  <span>排序：</span>
+  <select id="sort-select" onchange="handleSortChange(this.value)" class="bg-surface-container-low border-none rounded-lg text-xs font-medium py-1 pl-2 pr-6 focus:ring-1 focus:ring-primary text-on-surface">
+    <option value="default">預設推薦</option>
+    <option value="time">烹飪時間 (由短至長)</option>
+  </select>
+  <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl ml-2">
+    <button onclick="changeViewMode('grid')" id="view-btn-grid" title="雙排網格" class="p-1 rounded-lg text-primary bg-surface-container-lowest shadow-xs">
+      <span class="material-symbols-outlined text-[18px]">grid_view</span>
+    </button>
+    <button onclick="changeViewMode('large')" id="view-btn-large" title="大圖模式" class="p-1 rounded-lg text-on-surface-variant hover:text-primary">
+      <span class="material-symbols-outlined text-[18px]">view_agenda</span>
+    </button>
+    <button onclick="changeViewMode('list')" id="view-btn-list" title="列表模式" class="p-1 rounded-lg text-on-surface-variant hover:text-primary">
+      <span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+    </button>
+  </div>
+</div>
+      
 
       <section id="recipe-grid" class="grid grid-cols-1 md:grid-cols-3 gap-md min-h-[300px]"></section>
     </div>
@@ -668,7 +679,7 @@
     let currentPortion = 2;
     let currentHandsFreeStep = 0;
     let uploadedImageBase64 = "";
-
+    let viewMode = 'grid';
     let timerInterval = null;
     let timerSeconds = 180;
     let isTimerRunning = false;
@@ -759,6 +770,21 @@
       return result;
     }
 
+    function changeViewMode(mode) {
+      viewMode = mode;
+      ['grid', 'large', 'list'].forEach(m => {
+        const btn = document.getElementById(`view-btn-${m}`);
+        if (btn) {
+          if (m === mode) {
+            btn.className = "p-1 rounded-lg text-primary bg-surface-container-lowest shadow-xs";
+          } else {
+            btn.className = "p-1 rounded-lg text-on-surface-variant hover:text-primary";
+          }
+        }
+      });
+      renderRecipes();
+    }
+
     function renderRecipes() {
       const grid = document.getElementById("recipe-grid");
       const filtered = getFilteredRecipes();
@@ -776,38 +802,76 @@
         return;
       }
 
-      grid.innerHTML = filtered.map((r, index) => {
+      // 根據 viewMode 設定外層容器網格
+      if (viewMode === 'large') {
+        grid.className = "grid grid-cols-1 gap-md min-h-[300px]";
+      } else if (viewMode === 'list') {
+        grid.className = "flex flex-col gap-sm min-h-[300px]";
+      } else {
+        // 雙排網格預設
+        grid.className = "grid grid-cols-2 md:grid-cols-3 gap-md min-h-[300px]";
+      }
+
+      grid.innerHTML = filtered.map((r) => {
         const isFav = favorites.has(r.id);
         const inCart = shoppingListRecipeIds.has(r.id);
-        const isFeatured = index === 0;
+
+        // 1. 列表模式 (精簡橫條)
+        if (viewMode === 'list') {
+          return `
+            <article onclick="openRecipeModal('${r.id}')" class="flex items-center gap-3 p-3 bg-surface-container-lowest rounded-2xl border border-secondary-container/20 shadow-xs cursor-pointer hover:bg-surface-container-low/50 transition-all">
+              <img class="w-20 h-20 rounded-xl object-cover shrink-0" src="${r.image}" alt="${r.title}">
+              <div class="flex-grow min-w-0">
+                <h2 class="font-bold text-base text-on-surface truncate">${r.title}</h2>
+                <div class="flex items-center gap-2 text-xs text-on-surface-variant mt-1">
+                  <span>⏱ ${r.time}分</span>
+                  <span>•</span>
+                  <span>${r.difficulty || '簡單'}</span>
+                  <span>•</span>
+                  <span>👥 ${r.servings || 2}人份</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button onclick="toggleCartFromCard(event, '${r.id}')" class="w-8 h-8 rounded-full ${inCart ? 'bg-secondary text-white' : 'bg-surface-container text-primary'} flex items-center justify-center">
+                  <span class="material-symbols-outlined text-base">${inCart ? 'shopping_bag' : 'add_shopping_cart'}</span>
+                </button>
+                <button onclick="toggleFavorite(event, '${r.id}')" class="w-8 h-8 rounded-full bg-surface-container text-primary flex items-center justify-center">
+                  <span class="material-symbols-outlined text-base" style="${isFav ? "font-variation-settings: 'FILL' 1;" : ""}">${isFav ? 'favorite' : 'favorite_border'}</span>
+                </button>
+              </div>
+            </article>
+          `;
+        }
+
+        // 2. 卡片模式 (大圖 / 雙排網格)
+        const cardHeight = viewMode === 'large' ? 'h-[260px] md:h-[340px]' : 'h-[180px] md:h-[260px]';
 
         return `
-          <article onclick="openRecipeModal('${r.id}')" class="${isFeatured ? 'col-span-1 md:col-span-2 relative h-[320px] md:h-[380px]' : 'relative h-[280px] md:h-[380px]'} rounded-3xl overflow-hidden shadow-ambient group cursor-pointer border border-secondary-container/20">
+          <article onclick="openRecipeModal('${r.id}')" class="relative ${cardHeight} rounded-2xl md:rounded-3xl overflow-hidden shadow-ambient group cursor-pointer border border-secondary-container/20">
             <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src="${r.image}" alt="${r.title}">
             <div class="absolute inset-0 bg-gradient-to-t from-on-background/85 via-on-background/20 to-transparent"></div>
 
-            <div class="absolute top-4 right-4 flex items-center gap-2">
-              <button onclick="toggleCartFromCard(event, '${r.id}')" title="加入購物清單" class="w-9 h-9 rounded-full ${inCart ? 'bg-secondary text-white' : 'bg-surface-container-lowest/80 text-primary'} backdrop-blur-md flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
-                <span class="material-symbols-outlined text-lg">${inCart ? 'shopping_bag' : 'add_shopping_cart'}</span>
+            <div class="absolute top-3 right-3 flex items-center gap-1.5">
+              <button onclick="toggleCartFromCard(event, '${r.id}')" class="w-8 h-8 rounded-full ${inCart ? 'bg-secondary text-white' : 'bg-surface-container-lowest/80 text-primary'} backdrop-blur-md flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+                <span class="material-symbols-outlined text-base">${inCart ? 'shopping_bag' : 'add_shopping_cart'}</span>
               </button>
-              <button onclick="toggleFavorite(event, '${r.id}')" title="收藏" class="w-9 h-9 rounded-full bg-surface-container-lowest/80 backdrop-blur-md text-primary flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
-                <span class="material-symbols-outlined text-lg" style="${isFav ? "font-variation-settings: 'FILL' 1;" : ""}">${isFav ? 'favorite' : 'favorite_border'}</span>
+              <button onclick="toggleFavorite(event, '${r.id}')" class="w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-md text-primary flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+                <span class="material-symbols-outlined text-base" style="${isFav ? "font-variation-settings: 'FILL' 1;" : ""}">${isFav ? 'favorite' : 'favorite_border'}</span>
               </button>
             </div>
 
-            <div class="absolute bottom-0 left-0 w-full p-5 text-white">
-              <h2 class="font-bold text-xl md:text-2xl mb-1 text-shadow tracking-tight">${r.title}</h2>
-              <div class="flex items-center gap-3 text-xs opacity-90 font-medium mt-2">
-                <span class="flex items-center gap-1 bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-full"><span class="material-symbols-outlined text-[15px]">schedule</span> ${r.time} 分鐘</span>
-                <span class="flex items-center gap-1 bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-full"><span class="material-symbols-outlined text-[15px]">psychology</span> ${r.difficulty || '簡單'}</span>
-                <span class="flex items-center gap-1 bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-full"><span class="material-symbols-outlined text-[15px]">person</span> ${r.servings || 2} 人份</span>
+            <div class="absolute bottom-0 left-0 w-full p-3.5 text-white">
+              <h2 class="font-bold text-sm md:text-lg mb-1 text-shadow tracking-tight line-clamp-1">${r.title}</h2>
+              <div class="flex items-center gap-1.5 text-[11px] opacity-90 font-medium mt-1 flex-wrap">
+                <span class="bg-black/30 backdrop-blur-xs px-2 py-0.5 rounded-full">⏱ ${r.time}分</span>
+                <span class="bg-black/30 backdrop-blur-xs px-2 py-0.5 rounded-full">${r.difficulty || '簡單'}</span>
               </div>
             </div>
           </article>
         `;
       }).join('');
     }
-
+    
     function addFridgeChip(name) {
       const input = document.getElementById("fridge-ingredients-input");
       const current = input.value.trim();
