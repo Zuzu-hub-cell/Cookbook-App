@@ -1779,6 +1779,7 @@
               const imgData = canvas.toDataURL("image/png");
 
               const img = document.createElement("img");
+              img.id = "generated-recipe-img";
               img.src = imgData;
               img.style.width = "100%";
               img.style.maxWidth = "550px";
@@ -1787,19 +1788,38 @@
               img.style.marginBottom = "20px";
 
               const tip = document.createElement("p");
+              tip.id = "generated-recipe-tip";
               tip.innerText = "👇 請長按下方圖片儲存至相簿 👇";
               tip.style.color = "#685369";
               tip.style.fontWeight = "bold";
               tip.style.fontSize = "16px";
               tip.style.margin = "10px 0";
 
+              // 新增返回按鈕
+              const backBtn = document.createElement("button");
+              backBtn.className = "btn";
+              backBtn.style.backgroundColor = "#8a7f8d";
+              backBtn.style.marginTop = "10px";
+              backBtn.innerText = "↩️ 返回食譜";
+              backBtn.onclick = resetView;
+
               const actionBar = document.querySelector(".action-bar");
               actionBar.innerHTML = "";
               actionBar.style.flexDirection = "column";
               actionBar.appendChild(tip);
               actionBar.appendChild(img);
+              actionBar.appendChild(backBtn);
 
               card.style.display = "none";
+            }
+
+            function resetView() {
+              const card = document.getElementById("recipe-card");
+              card.style.display = "block";
+
+              const actionBar = document.querySelector(".action-bar");
+              actionBar.innerHTML = `<button class="btn" onclick="downloadImage()">📥 轉為長按儲存圖片</button>`;
+              actionBar.style.flexDirection = "row";
             }
           <` + `/script>
         </body>
