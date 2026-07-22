@@ -1656,63 +1656,212 @@
         alert(`❌ Firebase 儲存失敗：${err.message}`);
       }
     }
-    async function shareRecipeAsImage() {
+    function shareRecipeAsImage() {
   if (!activeRecipe) return;
 
-  const modalContainer = document.getElementById("recipe-modal");
-  const modalCard = document.querySelector("#recipe-modal > div");
-  const headerActions = modalCard.querySelector(".sticky"); // 頂部按鈕列
-  const cookBanner = modalCard.querySelector(".from-primary-container\\/80")?.parentElement; // 開始煮飯 Banner
-  const noteInputArea = document.querySelector("#new-note-input")?.parentElement; // 筆記輸入框
+  const baseServings = activeRecipe.servings || 2;
+  const scaleFactor = currentPortion / baseServings;
 
-  try {
-    // 1. 暫時隱藏不必要的按鈕與互動區塊
-    if (headerActions) headerActions.style.display = 'none';
-    if (cookBanner) cookBanner.style.display = 'none';
-    if (noteInputArea) noteInputArea.style.display = 'none';
+  // 1. 整理食材列表 (含份量換算)
+  const ingredientsHtml = (activeRecipe.ingredients || []).map(ing => {
+    const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
+    return `
+      <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: #f6f2ec; border-radius: 8px; font-size: 14px;">
+        <span style="color: #2a242c; font-weight: 500;">${ing.name}</span>
+        <span style="color: #685369; font-weight: bold;">${scaledAmount}</span>
+      </div>
+    `;
+  }).join('');
 
-    // 2. 暫時移除卡片的最大高度限制與捲軸，讓內容完全展開
-    const originalMaxHeight = modalCard.style.maxHeight;
-    const originalOverflow = modalCard.style.overflowY;
-    modalCard.style.maxHeight = 'none';
-    modalCard.style.overflowY = 'visible';
+  // 2. 整理步驟列表
+  const stepsHtml = (activeRecipe.steps || []).map((step, idx) => `
+    <div style="display: flex; gap: 12px; padding: 12px; background: #f6f2ec; border-radius: 12px; align-items: flex-start;">
+      <span style="background: #FCC8B2; color: #4a354b; font-weight: bold; width: 24px; h-height: 24px; min-width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">${idx + 1}</span>
+      <p style="margin: 0; color: #2a242c; font-size: 14px; line-height: 1.6;">${step}</p>
+    </div>
+  `).join('');
 
-    // 3. 執行截圖
-    const canvas = await html2canvas(modalCard, {
-      useCORS: true,
-      scale: 2,
-      backgroundColor: "#faf8f5",
-      windowWidth: modalCard.scrollWidth,
-      windowHeight: modalCard.scrollHeight
-    });
+  // 3. 整理筆記列表 (若有)
+  const notesList = recipeNotes[activeRecipe.id] || [];
+  const notesHtml = notesList.length > 0 ? `
+    <div style="margin-top: 24px; background: #f0ebe3; padding: 16px; border-radius: 16px;">
+      <h3 style="margin: 0 0 12px 0; font-size: 16px; color: #685369; display: flex; align-items: center; gap: 6px;">📝 廚房筆記</h3>
+      ${notesList.map(n => `
+        <div style="font-size: 13px; color: #2a242c; padding: 6px 0; border-bottom: 1px dashed #cfc5d1;">
+          ${n.text} <span style="font-size: 10px; color: #8a7f8d;">(${n.date})</span>
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
 
-    // 4. 恢復原狀
-    modalCard.style.maxHeight = originalMaxHeight;
-    modalCard.style.overflowY = originalOverflow;
-    if (headerActions) headerActions.style.display = '';
-    if (cookBanner) cookBanner.style.display = '';
-    if (noteInputArea) noteInputArea.style.display = '';
+  // 4. 開啟新頁面並寫入專門設計的 HTML 圖卡範本
+  const shareWindow = window.open('', '_blank');
+  shareWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="zh-TW">
+    <head>
+      <meta charset="UTF-8">
+      <title>陳家食譜 - ${activeRecipe.title}</title>
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+      <style>
+        body {
+          font-family: 'Noto Sans TC', sans-serif;
+          background-color: #eae3d7;
+          margin: 0;
+          padding: 40px 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .action-bar {
+          margin-bottom: 20px;
+          display: flex;
+          gap: 12px;
+        }
+        .btn {
+          background-color: #685369;
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 20px;
+          font-size: 14px;
+          font-weight: bold;
+          cursor: pointer;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .card {
+          width: 100%;
+          max-width: 550px;
+          background: #faf8f5;
+          border-radius: 24px;
+          overflow: hidden;
+          box-shadow: 0 8px 30px rgba(104, 83, 105, 0.15);
+          padding-bottom: 30px;
+        }
+        .image-container {
+          position: relative;
+          height: 280px;
+          width: 100%;
+        }
+        .image-container img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .title-overlay {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 20px;
+          background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+          color: white;
+        }
+        .title-overlay h1 {
+          margin: 0;
+          font-size: 24px;
+        }
+        .content {
+          padding: 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+        .meta-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          background: #f6f2ec;
+          padding: 12px;
+          border-radius: 16px;
+          text-align: center;
+        }
+        .meta-item label {
+          display: block;
+          font-size: 11px;
+          color: #5a505c;
+          margin-bottom: 4px;
+        }
+        .meta-item span {
+          font-size: 14px;
+          font-weight: bold;
+          color: #685369;
+        }
+        .section-title {
+          font-size: 16px;
+          font-weight: bold;
+          color: #685369;
+          margin: 0 0 10px 0;
+        }
+        .footer {
+          text-align: center;
+          font-size: 12px;
+          color: #8a7f8d;
+          margin-top: 10px;
+        }
+      </style>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>
+    </head>
+    <body>
 
-    // 5. 下載圖片
-    const imageUri = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
-    link.download = `陳家食譜_${activeRecipe.title}.png`;
-    link.href = imageUri;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      <div class="action-bar">
+        <button class="btn" onclick="downloadImage()">📥 下載食譜圖片</button>
+      </div>
 
-  } catch (err) {
-    console.error("產生食譜圖片失敗:", err);
-    alert("❌ 產生圖片失敗，請再試一次。");
-    
-    // 確保發生錯誤時也能恢復介面
-    modalCard.style.maxHeight = '';
-    modalCard.style.overflowY = '';
-    if (headerActions) headerActions.style.display = '';
-    if (cookBanner) cookBanner.style.display = '';
-    if (noteInputArea) noteInputArea.style.display = '';
-  }
+      <div class="card" id="recipe-card">
+        <div class="image-container">
+          <img src="${activeRecipe.image}" crossorigin="anonymous" />
+          <div class="title-overlay">
+            <h1>${activeRecipe.title}</h1>
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="meta-grid">
+            <div class="meta-item"><label>預估時間</label><span>${activeRecipe.time} 分鐘</span></div>
+            <div class="meta-item"><label>難易度</label><span>${activeRecipe.difficulty || '簡單'}</span></div>
+            <div class="meta-item"><label>份量</label><span>${currentPortion} 人份</span></div>
+          </div>
+
+          <div>
+            <h3 class="section-title">🛒 所需食材</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+              ${ingredientsHtml}
+            </div>
+          </div>
+
+          <div>
+            <h3 class="section-title">🍳 烹飪步驟</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              ${stepsHtml}
+            </div>
+          </div>
+
+          ${notesHtml}
+
+          <div class="footer">
+            陳家食譜 • The Chan Family Cookbook
+          </div>
+        </div>
+      </div>
+
+      <script>
+        async function downloadImage() {
+          const card = document.getElementById("recipe-card");
+          const canvas = await html2canvas(card, {
+            useCORS: true,
+            scale: 2,
+            backgroundColor: "#eae3d7"
+          });
+          const link = document.createElement("a");
+          link.download = "陳家食譜_${activeRecipe.title}.png";
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        }
+      </script>
+    </body>
+    </html>
+  `);
+}
 }
   </script>
 </body>
