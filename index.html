@@ -157,7 +157,7 @@
       <section class="flex flex-col gap-md">
         <div class="relative w-full shadow-ambient rounded-full bg-surface-container-lowest border border-secondary-container/60 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary-container/50 transition-all">
           <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline">search</span>
-          <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="尋找靈感... 例如「意粉」、「氣炸鍋」或食材名" class="w-full h-14 pl-14 pr-28 rounded-full bg-transparent border-none focus:ring-0 text-base text-on-surface placeholder-outline-variant outline-none">
+          <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="尋找食譜" class="w-full h-14 pl-14 pr-28 rounded-full bg-transparent border-none focus:ring-0 text-base text-on-surface placeholder-outline-variant outline-none">
           <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
             <button onclick="clearSearch()" id="clear-search-btn" class="hidden w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant flex items-center justify-center transition-colors mr-1">
               <span class="material-symbols-outlined text-[18px]">close</span>
@@ -200,7 +200,7 @@
           </div>
           <div>
             <h2 class="font-bold text-2xl text-primary tracking-tight">清冰箱智慧搜尋</h2>
-            <p class="text-xs md:text-sm text-on-surface-variant mt-1">輸入家裡剩餘的食材，零浪費，自動匹配適合的美味料理。</p>
+            <p class="text-xs md:text-sm text-on-surface-variant mt-1">輸入家裡剩餘的食材，零浪費！</p>
           </div>
         </div>
 
@@ -215,12 +215,11 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-secondary-container/30">
-          <span class="text-xs text-on-surface-variant font-medium">常見剩餘食材快速點選：</span>
-          <button onclick="addFridgeChip('西蘭花')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 西蘭花</button>
+          <span class="text-xs text-on-surface-variant font-medium">常見剩餘食材：</span>
+          <button onclick="addFridgeChip('雞蛋')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 雞蛋</button>
           <button onclick="addFridgeChip('雞肉')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 雞肉</button>
           <button onclick="addFridgeChip('豆腐')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 豆腐</button>
-          <button onclick="addFridgeChip('檸檬')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 檸檬</button>
-          <button onclick="addFridgeChip('彩椒')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 彩椒</button>
+          <button onclick="addFridgeChip('洋蔥')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 洋蔥</button>
           <button onclick="addFridgeChip('蒜頭')" class="px-2.5 py-1 bg-surface-container-lowest hover:bg-surface-container text-xs rounded-lg border border-secondary-container/40 text-on-surface">+ 蒜頭</button>
         </div>
       </div>
@@ -247,7 +246,7 @@
             <span class="material-symbols-outlined text-primary text-2xl">shopping_cart</span>
             <h2 class="font-bold text-2xl text-primary tracking-tight">智慧購物清單</h2>
           </div>
-          <p class="text-xs md:text-sm text-on-surface-variant mt-1">已將選定食譜的食材自動歸類（蔬菜、肉類、調味品），街市或超市一次補齊不漏買。</p>
+          <p class="text-xs md:text-sm text-on-surface-variant mt-1">已將選定食譜的食材自動歸類，不要買漏嘢！</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="copyShoppingListText()" class="bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-secondary-container px-4 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-all">
@@ -271,8 +270,8 @@
     <div id="tab-favorites-content" class="hidden flex-col gap-lg">
       <div class="bg-surface-container-low p-6 md:p-8 rounded-2xl border border-secondary-container/40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 class="font-bold text-2xl text-primary tracking-tight">收藏靈感庫</h2>
-          <p class="text-sm text-on-surface-variant mt-1">您收藏料理，隨時準備在廚房重演美妙時刻。</p>
+          <h2 class="font-bold text-2xl text-primary tracking-tight">收藏</h2>
+          <p class="text-sm text-on-surface-variant mt-1">您收藏的食譜。</p>
         </div>
         <button onclick="switchTab('home')" class="bg-primary text-on-primary font-medium text-sm px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity flex items-center gap-2 shadow-sm">
           <span class="material-symbols-outlined text-[18px]">search</span> 尋找更多食譜
@@ -377,8 +376,7 @@
               <span class="material-symbols-outlined">pan_tool</span>
             </div>
             <div>
-              <h4 class="font-bold text-sm text-on-primary-container">語音導讀模式</h4>
-              <p class="text-xs text-on-primary-container/80">大字體顯示 + 語音自動朗讀步驟</p>
+              <h4 class="font-bold text-sm text-on-primary-container">開始煮飯</h4>
             </div>
           </div>
           <button onclick="startHandsFreeMode()" class="bg-primary text-on-primary font-semibold text-xs md:text-sm px-4 py-2.5 rounded-full hover:bg-primary/90 transition-all shadow-sm whitespace-nowrap active:scale-95">
@@ -407,13 +405,13 @@
         <div class="flex flex-col gap-3 bg-surface-container-low/60 p-5 rounded-2xl border border-secondary-container/30">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-lg text-on-surface flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary">edit_note</span> 私房烹飪筆記
+              <span class="material-symbols-outlined text-primary">edit_note</span> 筆記
             </h3>
             <span class="text-xs text-outline font-medium" id="notes-count-badge">0 條筆記</span>
           </div>
           <div id="modal-notes-list" class="flex flex-col gap-2"></div>
           <div class="flex gap-2 mt-1">
-            <input type="text" id="new-note-input" placeholder="記錄烹飪心得或調整備忘（例如：上次鹹度減半、氣炸多加2分鐘...）" class="flex-grow rounded-xl bg-surface-container-lowest border border-secondary-container/50 px-3.5 py-2 text-xs md:text-sm focus:ring-2 focus:ring-primary outline-none" onkeyup="if(event.key==='Enter') saveRecipeNote()">
+            <input type="text" id="new-note-input" placeholder="記錄烹飪心得或（例如：上次鹹度減半、氣炸多加2分鐘...）" class="flex-grow rounded-xl bg-surface-container-lowest border border-secondary-container/50 px-3.5 py-2 text-xs md:text-sm focus:ring-2 focus:ring-primary outline-none" onkeyup="if(event.key==='Enter') saveRecipeNote()">
             <button onclick="saveRecipeNote()" class="bg-primary text-on-primary hover:bg-primary/90 text-xs font-semibold px-4 py-2 rounded-xl transition-all shrink-0 active:scale-95 flex items-center gap-1 shadow-xs">
               <span class="material-symbols-outlined text-base">add</span> 記下
             </button>
@@ -1305,7 +1303,7 @@
       if (notesList.length === 0) {
         container.innerHTML = `
           <p class="text-xs text-outline italic py-2 text-center bg-surface-container-lowest rounded-xl border border-dashed border-secondary-container/40">
-            尚無筆記。寫下您的獨門烹飪經驗吧！
+            尚無筆記
           </p>
         `;
         return;
@@ -1641,7 +1639,7 @@
 
       try {
         await recipesRef.child(targetId).set(recipeData);
-        alert(editId ? "✏️ 食譜已成功更新至 Firebase！" : "🎉 私房食譜已成功新增至 Firebase！");
+        alert(editId ? "✏️ 成功新增食譜！" : "🎉 成功新增食譜！");
         closeAddModal();
         document.getElementById("add-recipe-form").reset();
       } catch (err) {
