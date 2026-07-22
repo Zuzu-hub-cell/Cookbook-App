@@ -133,7 +133,7 @@
           <span class="material-symbols-outlined text-[20px]">kitchen</span> 清冰箱搜尋
         </button>
         <button onclick="switchTab('shopping')" id="nav-shopping" class="font-medium text-sm text-on-surface-variant flex items-center gap-2 hover:bg-surface-container-low px-4 py-2.5 rounded-full transition-all active:scale-95 relative">
-          <span class="material-symbols-outlined text-[20px]">shopping_cart</span> 智慧購物清單
+          <span class="material-symbols-outlined text-[20px]">shopping_cart</span> 購物清單
           <span id="cart-badge-desktop" class="hidden bg-secondary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
         </button>
         <button onclick="switchTab('favorites')" id="nav-favorites" class="font-medium text-sm text-on-surface-variant flex items-center gap-2 hover:bg-surface-container-low px-4 py-2.5 rounded-full transition-all active:scale-95">
@@ -255,7 +255,7 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-2xl">shopping_cart</span>
-            <h2 class="font-bold text-2xl text-primary tracking-tight">智慧購物清單</h2>
+            <h2 class="font-bold text-2xl text-primary tracking-tight">購物清單</h2>
           </div>
           <p class="text-xs md:text-sm text-on-surface-variant mt-1">已將選定食譜的食材自動歸類，不要買漏嘢！</p>
         </div>
@@ -1113,7 +1113,7 @@
     }
 
     function clearShoppingList() {
-  if (confirm("確定要清空智慧購物車嗎？")) {
+  if (confirm("確定要清空購物車嗎？")) {
     shoppingListRecipeIds.clear();
     checkedShoppingItems.clear(); // 👈 1. 清空記憶體中的勾選紀錄
     localStorage.setItem("warm_kitchen_cart", JSON.stringify([]));
