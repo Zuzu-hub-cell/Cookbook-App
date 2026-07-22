@@ -10,7 +10,6 @@
   <link rel="manifest" href="manifest.json" id="main-manifest">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   
   <!-- Firebase SDK (Compat 模式) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -725,6 +724,13 @@
       updateCartBadge();
     });
 
+    // 自動補抓切換頁面後的 WakeLock 保持螢幕常亮
+    document.addEventListener("visibilitychange", async () => {
+      if (wakeLock !== null && document.visibilityState === 'visible') {
+        await requestWakeLock();
+      }
+    });
+
     function renderCategoryTags() {
       const container = document.getElementById("tag-filters");
       container.innerHTML = categories.map(cat => {
@@ -1153,10 +1159,11 @@
       }).join('');
     }
 
+    // 修復正則表達式，確保「分數/小數」優先匹配
     function scaleQuantityString(amountStr, factor) {
       if (!amountStr || factor === 1) return amountStr;
 
-      return amountStr.replace(/(\d+(\.\d+)?|\d+\/\d+|半)/g, (match) => {
+      return amountStr.replace(/(\d+\/\d+|\d+\.\d+|\d+|半)/g, (match) => {
         let num = 1;
         if (match === '半') num = 0.5;
         else if (match.includes('/')) {
@@ -1624,6 +1631,7 @@
       document.getElementById("add-modal").classList.remove("flex");
     }
 
+    // 優化圖片壓縮參數（避免 Base64 塞爆數據庫）
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (file) {
@@ -1634,13 +1642,13 @@
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
             
-            const maxW = 800;
+            const maxW = 500;
             const scale = Math.min(1, maxW / img.width);
             canvas.width = img.width * scale;
             canvas.height = img.height * scale;
 
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            uploadedImageBase64 = canvas.toDataURL("image/jpeg", 0.75);
+            uploadedImageBase64 = canvas.toDataURL("image/jpeg", 0.6);
 
             const imgPreview = document.getElementById("image-preview");
             imgPreview.src = uploadedImageBase64;
@@ -1709,6 +1717,7 @@
       }
     }
 
+    // 增加 allowTaint 與 try...catch 處理 CORS 繪圖問題
     function shareRecipeAsImage() {
       if (!activeRecipe) return;
 
@@ -1818,46 +1827,52 @@
               btn.innerText = "⏳ 生成中...";
               
               const card = document.getElementById("recipe-card");
-              const canvas = await html2canvas(card, {
-                useCORS: true,
-                scale: 2,
-                backgroundColor: "#eae3d7"
-              });
+              try {
+                const canvas = await html2canvas(card, {
+                  useCORS: true,
+                  allowTaint: true,
+                  scale: 2,
+                  backgroundColor: "#eae3d7"
+                });
 
-              const imgData = canvas.toDataURL("image/png");
+                const imgData = canvas.toDataURL("image/png");
 
-              const img = document.createElement("img");
-              img.id = "generated-recipe-img";
-              img.src = imgData;
-              img.style.width = "100%";
-              img.style.maxWidth = "550px";
-              img.style.borderRadius = "24px";
-              img.style.boxShadow = "0 8px 30px rgba(0,0,0,0.2)";
-              img.style.marginBottom = "20px";
+                const img = document.createElement("img");
+                img.id = "generated-recipe-img";
+                img.src = imgData;
+                img.style.width = "100%";
+                img.style.maxWidth = "550px";
+                img.style.borderRadius = "24px";
+                img.style.boxShadow = "0 8px 30px rgba(0,0,0,0.2)";
+                img.style.marginBottom = "20px";
 
-              const tip = document.createElement("p");
-              tip.id = "generated-recipe-tip";
-              tip.innerText = "👇 請長按下方圖片儲存至相簿 👇";
-              tip.style.color = "#685369";
-              tip.style.fontWeight = "bold";
-              tip.style.fontSize = "16px";
-              tip.style.margin = "10px 0";
+                const tip = document.createElement("p");
+                tip.id = "generated-recipe-tip";
+                tip.innerText = "👇 請長按下方圖片儲存至相簿 👇";
+                tip.style.color = "#685369";
+                tip.style.fontWeight = "bold";
+                tip.style.fontSize = "16px";
+                tip.style.margin = "10px 0";
 
-              const backBtn = document.createElement("button");
-              backBtn.className = "btn";
-              backBtn.style.backgroundColor = "#8a7f8d";
-              backBtn.style.marginTop = "10px";
-              backBtn.innerText = "↩️ 返回食譜";
-              backBtn.onclick = resetView;
+                const backBtn = document.createElement("button");
+                backBtn.className = "btn";
+                backBtn.style.backgroundColor = "#8a7f8d";
+                backBtn.style.marginTop = "10px";
+                backBtn.innerText = "↩️ 返回食譜";
+                backBtn.onclick = resetView;
 
-              const actionBar = document.querySelector(".action-bar");
-              actionBar.innerHTML = "";
-              actionBar.style.flexDirection = "column";
-              actionBar.appendChild(tip);
-              actionBar.appendChild(img);
-              actionBar.appendChild(backBtn);
+                const actionBar = document.querySelector(".action-bar");
+                actionBar.innerHTML = "";
+                actionBar.style.flexDirection = "column";
+                actionBar.appendChild(tip);
+                actionBar.appendChild(img);
+                actionBar.appendChild(backBtn);
 
-              card.style.display = "none";
+                card.style.display = "none";
+              } catch(e) {
+                alert("產生圖片失敗，可能是因為網路圖片跨網域安全性限制，請嘗試上傳本地圖片後再試一次。");
+                btn.innerText = "📥 轉為長按儲存圖片";
+              }
             }
 
             function resetView() {
