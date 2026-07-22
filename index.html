@@ -1784,7 +1784,7 @@
             .section-title { font-size: 16px; font-weight: bold; color: #685369; margin: 0 0 10px 0; }
             .footer { text-align: center; font-size: 12px; color: #8a7f8d; margin-top: 10px; }
           </style>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><` + `/script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">${'</script>'}
         </head>
         <body>
           <div class="action-bar">
@@ -1859,7 +1859,6 @@
               tip.style.fontSize = "16px";
               tip.style.margin = "10px 0";
 
-              // 新增返回按鈕
               const backBtn = document.createElement("button");
               backBtn.className = "btn";
               backBtn.style.backgroundColor = "#8a7f8d";
@@ -1882,14 +1881,14 @@
               card.style.display = "block";
 
               const actionBar = document.querySelector(".action-bar");
-              actionBar.innerHTML = `<button class="btn" onclick="downloadImage()">📥 轉為長按儲存圖片</button>`;
+              actionBar.innerHTML = \`<button class="btn" onclick="downloadImage()">📥 轉為長按儲存圖片</button>\`;
               actionBar.style.flexDirection = "row";
             }
-          <` + `/script>
+          ${'</script>'}
         </body>
         </html>
       `);
     }
-  </script>
+</script>
 </body>
 </html>
