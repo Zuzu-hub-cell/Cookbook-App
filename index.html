@@ -170,31 +170,34 @@
         </div>
       </section>
 
-      <div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
-          <h2 class="font-bold text-xl text-on-surface tracking-tight" id="section-title">食譜</h2>
-          <span class="text-xs text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full font-medium" id="recipe-count-badge">0 道食譜</span>
-        </div>
-        <div class="flex items-center gap-1 text-xs text-on-surface-variant">
-          <span>排序：</span>
-          <select id="sort-select" onchange="handleSortChange(this.value)" class="bg-surface-container-low border-none rounded-lg text-xs font-medium py-1 pl-2 pr-6 focus:ring-1 focus:ring-primary text-on-surface">
-            <option value="default">預設推薦</option>
-            <option value="time">烹飪時間 (由短至長)</option>
-          </select>
-          <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl ml-2">
-            <button onclick="changeViewMode('grid')" id="view-btn-grid" title="雙排網格" class="p-1 rounded-lg text-primary bg-surface-container-lowest shadow-xs">
-              <span class="material-symbols-outlined text-[18px]">grid_view</span>
-            </button>
-            <button onclick="changeViewMode('large')" id="view-btn-large" title="大圖模式" class="p-1 rounded-lg text-on-surface-variant hover:text-primary">
-              <span class="material-symbols-outlined text-[18px]">view_agenda</span>
-            </button>
-            <button onclick="changeViewMode('list')" id="view-btn-list" title="列表模式" class="p-1 rounded-lg text-on-surface-variant hover:text-primary">
-              <span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
-            </button>
-          </div>
-        </div>
-      </div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-surface-container-high/60 pb-3 gap-2">
+  <div class="flex items-center gap-2 shrink-0">
+    <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+    <h2 class="font-bold text-xl text-on-surface tracking-tight whitespace-nowrap" id="section-title">食譜</h2>
+    <span class="text-xs text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded-full font-medium whitespace-nowrap" id="recipe-count-badge">0 道食譜</span>
+  </div>
+  
+  <div class="flex items-center justify-between sm:justify-end gap-2 text-xs text-on-surface-variant w-full sm:w-auto">
+    <div class="flex items-center gap-1">
+      <span class="whitespace-nowrap">排序：</span>
+      <select id="sort-select" onchange="handleSortChange(this.value)" class="bg-surface-container-low border-none rounded-lg text-xs font-medium py-1 pl-2 pr-6 focus:ring-1 focus:ring-primary text-on-surface outline-none">
+        <option value="default">預設推薦</option>
+        <option value="time">烹飪時間 (由短至長)</option>
+      </select>
+    </div>
+    <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl shrink-0">
+      <button onclick="changeViewMode('grid')" id="view-btn-grid" title="雙排網格" class="p-1 rounded-lg text-primary bg-surface-container-lowest shadow-xs">
+        <span class="material-symbols-outlined text-[18px]">grid_view</span>
+      </button>
+      <button onclick="changeViewMode('large')" id="view-btn-large" title="大圖模式" class="p-1 rounded-lg text-on-surface-variant hover:text-primary">
+        <span class="material-symbols-outlined text-[18px]">view_agenda</span>
+      </button>
+      <button onclick="changeViewMode('list')" id="view-btn-list" title="列表模式" class="p-1 rounded-lg text-on-surface-variant hover:text-primary">
+        <span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+      </button>
+    </div>
+  </div>
+</div>
 
       <section id="recipe-grid" class="grid grid-cols-2 md:grid-cols-3 gap-md min-h-[300px]"></section>
     </div>
@@ -467,16 +470,17 @@
       </div>
     </div>
 
-    <div class="p-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-between max-w-4xl mx-auto w-full">
-      <button onclick="prevStep()" id="hf-prev-btn" class="px-6 py-3 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold text-sm flex items-center gap-2 disabled:opacity-40">
-        <span class="material-symbols-outlined">arrow_back</span> 上一步
-      </button>
-      <div class="flex gap-1" id="hf-dots"></div>
-      <button onclick="nextStep()" id="hf-next-btn" class="px-6 py-3 rounded-full bg-primary text-on-primary hover:bg-primary/90 font-semibold text-sm flex items-center gap-2 shadow-sm active:scale-95">
-        下一步 <span class="material-symbols-outlined">arrow_forward</span>
-      </button>
-    </div>
-  </div>
+    <div class="p-4 md:p-6 bg-surface-container-lowest border-t border-surface-container-high flex items-center justify-between max-w-4xl mx-auto w-full gap-2">
+  <button onclick="prevStep()" id="hf-prev-btn" class="w-28 md:w-36 py-3 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold text-xs md:text-sm flex items-center justify-center gap-1 shrink-0 disabled:opacity-40">
+    <span class="material-symbols-outlined text-base">arrow_back</span> 上一步
+  </button>
+
+  <div class="flex items-center justify-center gap-1.5 flex-grow overflow-x-auto no-scrollbar px-2" id="hf-dots"></div>
+
+  <button onclick="nextStep()" id="hf-next-btn" class="w-28 md:w-36 py-3 rounded-full bg-primary text-on-primary hover:bg-primary/90 font-semibold text-sm flex items-center justify-center gap-1 shrink-0 shadow-sm active:scale-95 whitespace-nowrap">
+    下一步 <span class="material-symbols-outlined text-base">arrow_forward</span>
+  </button>
+</div>
 
   <!-- ADD / EDIT RECIPE MODAL -->
   <div id="add-modal" class="fixed inset-0 z-50 bg-on-background/50 backdrop-blur-sm hidden items-center justify-center p-3 md:p-6 overflow-y-auto">
@@ -1495,9 +1499,9 @@
       }
 
       const dotsContainer = document.getElementById("hf-dots");
-      dotsContainer.innerHTML = (activeRecipe.steps || []).map((_, idx) => `
-        <span class="w-2.5 h-2.5 rounded-full transition-all ${idx === currentHandsFreeStep ? 'bg-primary w-6' : 'bg-surface-container-high'}"></span>
-      `).join('');
+dotsContainer.innerHTML = (activeRecipe.steps || []).map((_, idx) => `
+  <span class="w-2.5 h-2.5 rounded-full transition-all shrink-0 ${idx === currentHandsFreeStep ? 'bg-primary w-6' : 'bg-surface-container-high'}"></span>
+`).join('');
     }
 
     function nextStep() {
