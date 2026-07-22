@@ -1102,10 +1102,10 @@
     }
 
     function classifyIngredientCategory(name) {
-      const vegKeywords = ["西蘭花", "菜", "甜薯", "牛油果", "生菜", "櫛瓜", "彩椒", "蕃茄", "蒜", "洋蔥", "檸檬", "薑", "蔥", "菇", "蘿蔔"];
-      const meatKeywords = ["雞", "豬", "牛", "魚", "蝦", "肉", "翅", "鱸", "鯛", "鮭", "蟹", "蛤"];
-      const seasoningKeywords = ["油", "鹽", "糖", "醬油", "米酒", "白酒", "醋", "胡椒", "香草", "蜂蜜", "奶油", "芝麻", "牛油"];
-
+      const vegKeywords = ["西蘭花", "菜", "番薯", "牛油果", "生菜", "翠玉瓜", "燈籠椒", "番茄", "蒜", "洋蔥", "檸檬", "薑", "蔥", "菇", "蘿蔔", "菜心", "芥蘭", "菠菜", "黃芽白", "金菇", "矮瓜", "節瓜", "青瓜", "薯仔", "粟米", "豆苗", "芫荽"];
+      const meatKeywords = ["雞", "豬", "牛", "魚", "蝦", "肉", "翼", "鱸", "鯛", "三文魚", "蟹", "蜆", "鴨", "鵝", "羊", "魷魚", "帶子", "墨魚", "鮑魚", "腩", "排骨"];
+      const seasoningKeywords = ["油", "鹽", "糖", "生抽", "老抽", "豉油", "蠔油", "麻油", "米酒", "白酒", "醋", "胡椒", "香草", "蜜糖", "牛油", "忌廉", "芝麻", "粟粉", "豆豉", "辣椒", "八角", "九層塔"];
+      
       if (vegKeywords.some(k => name.includes(k))) return "veg";
       if (meatKeywords.some(k => name.includes(k))) return "meat";
       if (seasoningKeywords.some(k => name.includes(k))) return "seasoning";
