@@ -1146,38 +1146,85 @@
   return "staple";
 }
 
-    function clearShoppingList() {
-  if (confirm("確定要清空購物車嗎？")) {
+    // 1. 新增手動項目
+function addCustomShoppingItem() {
+  const input = document.getElementById("custom-item-input");
+  const val = input.value.trim();
+  if (!val) return;
+
+  // 自動拆分名稱與數量（若中間有空格）
+  const parts = val.split(/\s+/);
+  let name = val;
+  let amount = "1份";
+  if (parts.length >= 2) {
+    name = parts[0];
+    amount = parts.slice(1).join(' ');
+  }
+
+  const newItem = {
+    id: "custom_" + Date.now(),
+    name: name,
+    amount: amount
+  };
+
+  customShoppingItems.push(newItem);
+  localStorage.setItem("warm_kitchen_custom_items", JSON.stringify(customShoppingItems));
+  input.value = "";
+  renderShoppingList();
+}
+
+// 2. 刪除手動項目
+function deleteCustomShoppingItem(id) {
+  customShoppingItems = customShoppingItems.filter(i => i.id !== id);
+  checkedShoppingItems.delete(id); // 一併清除勾選記憶
+  localStorage.setItem("warm_kitchen_custom_items", JSON.stringify(customShoppingItems));
+  localStorage.setItem("warm_kitchen_checked_items", JSON.stringify([...checkedShoppingItems]));
+  renderShoppingList();
+}
+
+// 3. 升級：清空購物車（一併清空手動新增項目）
+function clearShoppingList() {
+  if (confirm("確定要清空智慧購物車嗎？")) {
     shoppingListRecipeIds.clear();
-    checkedShoppingItems.clear(); // 👈 1. 清空記憶體中的勾選紀錄
+    checkedShoppingItems.clear();
+    customShoppingItems = []; // 清空手動新增
     localStorage.setItem("warm_kitchen_cart", JSON.stringify([]));
-    localStorage.setItem("warm_kitchen_checked_items", JSON.stringify([])); // 👈 2. 清空本地快取
+    localStorage.setItem("warm_kitchen_checked_items", JSON.stringify([]));
+    localStorage.setItem("warm_kitchen_custom_items", JSON.stringify([]));
     updateCartBadge();
     renderShoppingList();
   }
 }
-    function copyShoppingListText() {
-      const selectedRecipes = recipes.filter(r => shoppingListRecipeIds.has(r.id));
-      if (selectedRecipes.length === 0) {
-        alert("購物車是空的，請先加入食譜。");
-        return;
-      }
 
-      let text = "🛒 陳家食譜 • 智慧買菜清單：\n";
-      selectedRecipes.forEach(r => {
-        text += `\n【${r.title}】\n`;
-        (r.ingredients || []).forEach(i => {
-          text += `• ${i.name} (${i.amount})\n`;
-        });
-      });
+// 4. 升級：複製文字（包含手動新增項目）
+function copyShoppingListText() {
+  const selectedRecipes = recipes.filter(r => shoppingListRecipeIds.has(r.id));
+  if (selectedRecipes.length === 0 && customShoppingItems.length === 0) {
+    alert("購物車是空的，請先加入食譜或手動新增項目。");
+    return;
+  }
 
-      navigator.clipboard.writeText(text).then(() => {
-        alert("📋 買菜清單已成功複製到剪貼簿！可直接貼上傳送。");
-      }).catch(() => {
-        alert("複製失敗，請手動選擇複製。");
-      });
-    }
+  let text = "🛒 陳家食譜 • 智慧買菜清單：\n";
+  selectedRecipes.forEach(r => {
+    text += `\n【${r.title}】\n`;
+    (r.ingredients || []).forEach(i => {
+      text += `• ${i.name} (${i.amount})\n`;
+    });
+  });
 
+  if (customShoppingItems.length > 0) {
+    text += `\n【手動新增/其他】\n`;
+    customShoppingItems.forEach(i => {
+      text += `• ${i.name} (${i.amount})\n`;
+    });
+  }
+
+  navigator.clipboard.writeText(text).then(() => {
+    alert("📋 買菜清單已成功複製到剪貼簿！可直接貼上傳送。");
+  }).catch(() => {
+    alert("複製失敗，請手動選擇複製。");
+  });
+}
     function onPortionInputChange(val) {
       let num = parseInt(val);
       if (isNaN(num) || num < 1) num = 1;
