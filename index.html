@@ -1642,47 +1642,72 @@
     }
 
     function toggleTimer() {
-      const btn = document.getElementById("timer-toggle-btn");
-      if (isTimerRunning) {
+  const btn = document.getElementById("timer-toggle-btn");
+  if (isTimerRunning) {
+    clearInterval(timerInterval);
+    isTimerRunning = false;
+    btn.innerText = "繼續";
+  } else {
+    if (timerSeconds <= 0) updateTimerFromInput();
+    if (timerSeconds <= 0) return;
+
+    getAudioContext();
+
+    isTimerRunning = true;
+    btn.innerText = "暫停";
+    timerInterval = setInterval(() => {
+      if (timerSeconds > 0) {
+        timerSeconds--;
+        updateTimerDisplay();
+      } else {
         clearInterval(timerInterval);
         isTimerRunning = false;
-        btn.innerText = "繼續";
-      } else {
-        if (timerSeconds <= 0) updateTimerFromInput();
-        if (timerSeconds <= 0) return;
-
-        getAudioContext();
-
-        isTimerRunning = true;
-        btn.innerText = "暫停";
-        timerInterval = setInterval(() => {
-          if (timerSeconds > 0) {
-            timerSeconds--;
-            updateTimerDisplay();
-          } else {
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-            btn.innerText = "開始";
-            
-            // 響聲 + 彈窗
-            playChimeSound();
-            setTimeout(() => {
-              alert("⏰ 叮！烹飪計時結束。");
-            }, 100);
-          }
-        }, 1000);
+        btn.innerText = "開始";
+        
+        // 1. 響 10 秒鬧鐘
+        playChimeSound();
+        // 2. 彈出不卡死聲音嘅懸浮提示框
+        showTimerToast("⏰ 叮！烹飪計時結束。");
       }
-    }
+    }, 1000);
+  }
+}
 
-    function resetTimer() {
-      if (alarmInterval) { clearInterval(alarmInterval); alarmInterval = null; }
-      clearInterval(timerInterval);
-      isTimerRunning = false;
-      updateTimerFromInput();
-      updateTimerDisplay();
-      document.getElementById("timer-toggle-btn").innerText = "開始";
-    }
+function resetTimer() {
+  stopAlarmAndToast(); // 重置時同時關閉鬧鐘與提示框
+  clearInterval(timerInterval);
+  isTimerRunning = false;
+  updateTimerFromInput();
+  updateTimerDisplay();
+  document.getElementById("timer-toggle-btn").innerText = "開始";
+}
 
+// 👈 新增：自訂懸浮提示框（不會凍結 JS 發聲）
+function showTimerToast(msg) {
+  const oldToast = document.getElementById("timer-toast");
+  if (oldToast) oldToast.remove();
+
+  const toast = document.createElement("div");
+  toast.id = "timer-toast";
+  toast.className = "fixed top-10 left-1/2 -translate-x-1/2 z-[100] bg-on-background/90 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 backdrop-blur-md transition-all animate-bounce";
+  toast.innerHTML = `
+    <span class="material-symbols-outlined text-2xl text-secondary">alarm</span>
+    <span class="font-bold text-sm tracking-wide">${msg}</span>
+    <button onclick="stopAlarmAndToast()" class="ml-2 bg-primary text-on-primary text-xs px-3 py-1.5 rounded-xl font-bold active:scale-95 transition-transform">
+      關閉鬧鐘
+    </button>
+  `;
+  document.body.appendChild(toast);
+}
+
+function stopAlarmAndToast() {
+  if (alarmInterval) { 
+    clearInterval(alarmInterval); 
+    alarmInterval = null; 
+  }
+  const toast = document.getElementById("timer-toast");
+  if (toast) toast.remove();
+}
     function updateTimerDisplay() {
       const mins = Math.floor(timerSeconds / 60);
       const secs = timerSeconds % 60;
