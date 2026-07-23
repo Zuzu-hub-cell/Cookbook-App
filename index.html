@@ -544,6 +544,7 @@
               <option value="粥">粥</option>
               <option value="麵包">麵包</option>
               <option value="甜品">甜品</option>
+              <option value="其他">其他</option>
             </select>
           </div>
           <div>
@@ -702,7 +703,7 @@
     let wakeLock = null;
     let audioCtx = null;
 
-    const categories = ["全部", "餸菜", "飯", "麵", "湯", "粥", "麵包", "甜品"];
+    const categories = ["全部", "餸菜", "飯", "麵", "湯", "粥", "麵包", "甜品", "其他"];
 
     // 載入 Firebase 並自動同步筆記
     if (isFirebaseConnected && recipesRef) {
@@ -710,6 +711,7 @@
         const data = snapshot.val();
         if (data) {
           recipes = Object.keys(data).map(key => {
+            // 關鍵位置：從 Firebase 載入最新筆記到記憶體
             if (data[key].notes) {
               recipeNotes[key] = data[key].notes;
             }
@@ -730,7 +732,7 @@
         console.error("Firebase 讀取數據失敗:", error);
       });
     }
-
+    
     function uploadDefaultRecipes() {
       if (recipesRef) {
         defaultRecipes.forEach(r => {
@@ -800,6 +802,7 @@
         case '粥': return '<span class="material-symbols-outlined text-[18px]">breakfast_dining</span>';
         case '麵包': return '<span class="material-symbols-outlined text-[18px]">bakery_dining</span>';
         case '甜品': return '<span class="material-symbols-outlined text-[18px]">icecream</span>';
+        case '其他': return '<span class="material-symbols-outlined text-[18px]">icecream</span>';
         default: return '<span class="material-symbols-outlined text-[18px]">grid_view</span>';
       }
     }
@@ -1489,7 +1492,7 @@
       `).join('');
     }
 
-    // 筆記寫入 Firebase（不限字數）
+    // 筆記寫入 Firebase
     async function saveRecipeNote() {
       if (!activeRecipe) return;
       const input = document.getElementById("new-note-input");
@@ -1533,8 +1536,10 @@
         delete recipeNotes[activeRecipe.id];
       }
 
+      // 1. 本地快取
       localStorage.setItem("warm_kitchen_notes", JSON.stringify(recipeNotes));
 
+      // 2. 關鍵位置：同步更新 Firebase 上的筆記資料（修復 updatedNotes 變數定義問題）
       if (isFirebaseConnected && recipesRef) {
         try {
           const updatedNotes = recipeNotes[activeRecipe.id] || null;
@@ -1546,7 +1551,7 @@
 
       renderNotesForActiveRecipe();
     }
-
+    
     function closeModal() {
       document.getElementById("recipe-modal").classList.add("hidden");
       document.getElementById("recipe-modal").classList.remove("flex");
@@ -1611,6 +1616,10 @@
 
     function startHandsFreeMode() {
       if (!activeRecipe) return;
+      
+      // 點擊事件中順便預先啟用音訊，確保 Safari / iOS 聲音不會被擋
+      getAudioContext();
+
       currentHandsFreeStep = 0;
       
       // 👈 每次進入煮飯模式，計時歸零為 00:00
