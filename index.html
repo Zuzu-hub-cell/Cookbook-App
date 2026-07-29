@@ -601,11 +601,13 @@
 
         <!-- 動態食材組別區 -->
         <div class="flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <label class="block text-xs font-semibold text-on-surface-variant">食材清單*</label>
-            <button type="button" onclick="addIngredientGroup()" class="text-xs text-primary font-bold hover:underline flex items-center gap-0.5">
-              <span class="material-symbols-outlined text-sm">add_circle</span> 新增食材組別
-          <div id="ingredient-groups-container" class="flex flex-col gap-3">
+          <div class="flex items-center justify-between w-full mb-1">
+            <label class="block text-xs font-semibold text-on-surface-variant">食材清單 (可按步驟/部位分組) *</label>
+            <button type="button" onclick="addIngredientGroup()" class="text-xs text-primary font-bold hover:underline flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-base">add_circle</span> 新增食材組別
+            </button>
+          </div>
+          <div id="ingredient-groups-container" class="flex flex-col gap-3 w-full">
             <!-- 程式碼會自動在這裡動態產生食材組別 -->
           </div>
         </div>
