@@ -1947,11 +1947,11 @@
 
       if (activeRecipe.ingredientGroups && activeRecipe.ingredientGroups.length > 0) {
         activeRecipe.ingredientGroups.forEach(g => {
-          const content = (g.items || []).map(i => `${i.name} ${i.amount}`).join(', ');
+          const content = (g.items || []).map(i => `${i.name} ${i.amount}`).join('\n');
           addIngredientGroup(g.title || "", content);
         });
       } else {
-        const content = (activeRecipe.ingredients || []).map(i => `${i.name} ${i.amount}`).join(', ');
+        const content = (activeRecipe.ingredients || []).map(i => `${i.name} ${i.amount}`).join('\n');
         addIngredientGroup("主要食材", content);
       }
 
@@ -1973,7 +1973,6 @@
       document.getElementById("add-modal").classList.remove("hidden");
       document.getElementById("add-modal").classList.add("flex");
     }
-
     function closeAddModal() {
       document.getElementById("add-modal").classList.add("hidden");
       document.getElementById("add-modal").classList.remove("flex");
