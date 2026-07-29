@@ -415,7 +415,7 @@
             </h3>
             <span class="text-xs text-outline font-medium">點擊勾選以記錄備料</span>
           </div>
-          <div id="modal-ingredients-list" class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-surface-container-low/50 p-4 rounded-2xl border border-secondary-container/20"></div>
+          <div id="modal-ingredients-list" class="flex flex-col gap-4 bg-surface-container-low/50 p-4 rounded-2xl border border-secondary-container/20"></div>
         </div>
 
         <div class="flex flex-col gap-4">
@@ -425,7 +425,7 @@
           <div id="modal-steps-list" class="flex flex-col gap-3"></div>
         </div>
 
-        <!-- 筆記區：換成不限字數的大多行輸入框 -->
+        <!-- 筆記區 -->
         <div class="flex flex-col gap-3 bg-surface-container-low/60 p-5 rounded-2xl border border-secondary-container/30">
           <div class="flex items-center justify-between">
             <h3 class="font-bold text-lg text-on-surface flex items-center gap-2">
@@ -467,7 +467,7 @@
       </div>
     </div>
 
-    <!-- 👈 煮飯模式專用：完整食譜對照抽屜 Panel -->
+    <!-- 煮飯模式專用：完整食譜對照抽屜 Panel -->
     <div id="hf-recipe-drawer" class="hidden absolute inset-x-0 bottom-0 top-[72px] z-40 bg-surface-container-lowest/95 backdrop-blur-md p-5 md:p-8 overflow-y-auto flex-col gap-5 border-t border-surface-container-high animate-in slide-in-from-bottom duration-300">
       <div class="flex items-center justify-between border-b border-surface-container-high pb-3">
         <h4 class="font-bold text-lg text-primary flex items-center gap-2">
@@ -484,7 +484,7 @@
           <h5 class="font-bold text-sm text-on-surface mb-3 flex items-center gap-1">
             <span class="material-symbols-outlined text-primary text-base">shopping_basket</span> 所需食材
           </h5>
-          <div id="hf-drawer-ingredients" class="grid grid-cols-2 gap-2 text-xs"></div>
+          <div id="hf-drawer-ingredients" class="flex flex-col gap-3 text-xs"></div>
         </div>
 
         <!-- 全步驟對照 -->
@@ -496,11 +496,11 @@
         </div>
       </div>
     </div>
+
     <div class="flex-grow flex flex-col justify-center items-center px-6 md:px-16 py-8 text-center max-w-4xl mx-auto w-full">
       <div class="w-16 h-16 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center text-2xl font-bold mb-6 shadow-sm" id="hf-step-badge">1</div>
       <p id="hf-step-text" class="text-2xl md:text-3xl font-medium leading-relaxed text-on-surface tracking-wide mb-8">載入中...</p>
 
-      <!-- 預設計時改為 00:00 -->
       <div class="flex flex-wrap items-center justify-center gap-4 my-4">
         <div class="flex items-center gap-2 bg-surface-container-high px-4 py-2.5 rounded-full shadow-xs">
           <span class="material-symbols-outlined text-primary">timer</span>
@@ -599,9 +599,17 @@
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-on-surface-variant mb-1">食材清單 (以逗號或換行分開) *</label>
-          <textarea id="add-ingredients" rows="3" required placeholder="例如：西蘭花 1棵, 雞胸肉 200克, 蒜頭 3瓣, 鹽 1茶匙" class="w-full rounded-xl bg-surface-container-low border border-secondary-container/50 px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary outline-none"></textarea>
+        <!-- 動態食材組別區 -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold text-on-surface-variant">食材清單 (可按步驟/部位分組) *</label>
+            <button type="button" onclick="addIngredientGroup()" class="text-xs text-primary font-bold hover:underline flex items-center gap-0.5">
+              <span class="material-symbols-outlined text-sm">add_circle</span> 新增食材組別 (如：湯種/麵團/內餡)
+            </button>
+          </div>
+          <div id="ingredient-groups-container" class="flex flex-col gap-3">
+            <!-- 程式碼會自動在這裡動態產生食材組別 -->
+          </div>
         </div>
 
         <div>
@@ -651,6 +659,24 @@
         servings: 2,
         difficulty: "簡單",
         image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBJJeb_IlEwjEAFDxK5rRBNpPbCUaqzAUiu-syKyEvyFu_04Nt-QOv0pUJ86BcFTOE4mWbQSYwRdGGAyciVQcftAh2ONLJ78AD7ddBeQK0Xj0-g5aHA8wlHaGZNPYIKdoDo7FYcVIt-vGmevaUuTevapbvftQr3X-nvPRsddLJq1ewg6P9TjfflGDkl24DYQQRowFTeHweQp_VCN8wmsFGd9EVWNqeRE3AlHbKnpLdVfP3-1yElqSGXJw",
+        ingredientGroups: [
+          {
+            title: "主要食材",
+            items: [
+              { name: "黃金甜薯", amount: "100 克 (切塊)" },
+              { name: "有機三色藜麥", amount: "50 克 (煮熟)" },
+              { name: "新鮮酪梨", amount: "0.5 顆 (切片)" },
+              { name: "綜合生菜", amount: "80 克" }
+            ]
+          },
+          {
+            title: "醬汁調料",
+            items: [
+              { name: "特級初榨橄欖油", amount: "1 大匙" },
+              { name: "檸檬汁", amount: "1 匙" }
+            ]
+          }
+        ],
         ingredients: [
           { name: "黃金甜薯", amount: "100 克 (切塊)" },
           { name: "有機三色藜麥", amount: "50 克 (煮熟)" },
@@ -665,53 +691,6 @@
           "生菜清洗乾淨，瀝乾後鋪於盤底。",
           "將熟甜薯、藜麥與切片酪梨均勻擺放於生菜上。",
           "淋上特級初榨橄欖油與檸檬汁，微拌即可享用。"
-        ]
-      },
-      {
-        id: "r2",
-        title: "蒜香西蘭花炒雞丁",
-        category: "餸菜",
-        time: 15,
-        likes: 1520,
-        servings: 2,
-        difficulty: "簡單",
-        image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
-        ingredients: [
-          { name: "西蘭花", amount: "1 棵 (切小朵)" },
-          { name: "雞胸肉", amount: "200 克 (切丁)" },
-          { name: "蒜頭", amount: "3 瓣 (拍碎)" },
-          { name: "醬油", amount: "1 大匙" },
-          { name: "橄欖油", amount: "1 匙" },
-          { name: "鹽與黑胡椒", amount: "少許" }
-        ],
-        steps: [
-          "西蘭花切小朵放入沸水中焯水 1 分鐘後撈出瀝乾。",
-          "雞肉丁用少許醬油醃製 5 分鐘。",
-          "熱鍋倒入橄欖油爆香蒜頭，加入雞肉丁翻炒至變色。",
-          "倒入焯好水的西蘭花，加入海鹽與黑胡椒快炒 2 分鐘即可起鍋。"
-        ]
-      },
-      {
-        id: "r3",
-        title: "香酥百頁豆腐",
-        category: "餸菜",
-        time: 10,
-        likes: 890,
-        servings: 2,
-        difficulty: "簡單",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAlsCu4XzgoNToRqInVrwzD_fxMVYhmoBs-nRzY2Hwb2OgJAMfqKCB9Q_yfyL0ZkBMYrj_sTCRyewH4MvIJDIf4CcNsMhjnqxuxNGTovNv4rZ0BiskbrMiCiSz9KVBAnt2unrIMgqYGUDVWUlwwYnPb2ASHeiJekvjgtxSmVh3YpUND5dFzp_yp3_yjCrHr-fJhCKHIJG2SlyelKXK94F-ySTsZWr2gi9CLGeuAcnqvBp729MOpQ9Hi3w",
-        ingredients: [
-          { name: "百頁豆腐", amount: "1 塊" },
-          { name: "植物油", amount: "1 匙" },
-          { name: "胡椒鹽", amount: "適量" },
-          { name: "義式香草粉", amount: "少許" }
-        ],
-        steps: [
-          "百頁豆腐用廚房紙巾吸乾表面水分，切成均勻正方形小塊。",
-          "豆腐塊表面刷上少許植物油。",
-          "放進氣炸鍋，設定 180°C 氣炸 8 分鐘。",
-          "中途拉出氣炸籃稍微翻面，再氣炸 2 分鐘至金黃酥脆。",
-          "起鍋撒上胡椒鹽與香草粉即可美味上桌。"
         ]
       }
     ];
@@ -732,20 +711,18 @@
     let viewMode = 'grid';
     let timerInterval = null;
     let alarmInterval = null;
-    let timerSeconds = 0; // 👈 煮飯模式計時器預設 00:00
+    let timerSeconds = 0;
     let isTimerRunning = false;
     let wakeLock = null;
     let audioCtx = null;
 
     const categories = ["全部", "餸菜", "飯", "麵", "湯", "粥", "麵包", "甜品", "其他"];
 
-    // 載入 Firebase 並自動同步筆記
     if (isFirebaseConnected && recipesRef) {
       recipesRef.on("value", (snapshot) => {
         const data = snapshot.val();
         if (data) {
           recipes = Object.keys(data).map(key => {
-            // 關鍵位置：從 Firebase 載入最新筆記到記憶體
             if (data[key].notes) {
               recipeNotes[key] = data[key].notes;
             }
@@ -766,7 +743,7 @@
         console.error("Firebase 讀取數據失敗:", error);
       });
     }
-    
+
     function uploadDefaultRecipes() {
       if (recipesRef) {
         defaultRecipes.forEach(r => {
@@ -811,6 +788,33 @@
       return audioCtx;
     }
 
+    // 1. 動態新增食材組別 HTML
+    function addIngredientGroup(title = "", content = "") {
+      const container = document.getElementById("ingredient-groups-container");
+      const groupHtml = `
+        <div class="ing-group-item bg-surface-container-low/70 p-3.5 rounded-2xl border border-secondary-container/40 flex flex-col gap-2 relative">
+          <div class="flex items-center justify-between gap-2">
+            <input type="text" value="${title}" placeholder="組別標題（例如：湯種 / 主麵團 / 卡士達內餡）" class="ing-group-title flex-grow rounded-lg bg-surface-container-lowest border border-secondary-container/40 px-3 py-1.5 text-xs font-bold text-primary focus:ring-1 focus:ring-primary outline-none">
+            <button type="button" onclick="removeIngredientGroup(this)" class="text-outline hover:text-error transition-colors p-1 rounded-md shrink-0" title="刪除此組別">
+              <span class="material-symbols-outlined text-base">delete</span>
+            </button>
+          </div>
+          <textarea rows="2" placeholder="食材與份量（例如：高筋麵粉 250g, 鮮奶 100ml，以逗號或換行分開）" class="ing-group-content w-full rounded-lg bg-surface-container-lowest border border-secondary-container/40 px-3 py-2 text-xs focus:ring-1 focus:ring-primary outline-none">${content}</textarea>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', groupHtml);
+    }
+
+    // 2. 刪除組別
+    function removeIngredientGroup(btn) {
+      const groups = document.querySelectorAll(".ing-group-item");
+      if (groups.length <= 1) {
+        alert("最少需要保留一個食材組別喔！");
+        return;
+      }
+      btn.closest(".ing-group-item").remove();
+    }
+
     function renderCategoryTags() {
       const container = document.getElementById("tag-filters");
       container.innerHTML = categories.map(cat => {
@@ -836,7 +840,7 @@
         case '粥': return '<span class="material-symbols-outlined text-[18px]">breakfast_dining</span>';
         case '麵包': return '<span class="material-symbols-outlined text-[18px]">bakery_dining</span>';
         case '甜品': return '<span class="material-symbols-outlined text-[18px]">icecream</span>';
-        case '其他': return '<span class="material-symbols-outlined text-[18px]">icecream</span>';
+        case '其他': return '<span class="material-symbols-outlined text-[18px]">more_horiz</span>';
         default: return '<span class="material-symbols-outlined text-[18px]">grid_view</span>';
       }
     }
@@ -1288,24 +1292,51 @@
       renderModalIngredientsWithPortion();
     }
 
+    // 支援分組顯示食材
     function renderModalIngredientsWithPortion() {
       if (!activeRecipe) return;
       const baseServings = activeRecipe.servings || 2;
       const scaleFactor = currentPortion / baseServings;
-
       const ingredientsContainer = document.getElementById("modal-ingredients-list");
-      ingredientsContainer.innerHTML = (activeRecipe.ingredients || []).map(ing => {
-        const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
-        return `
-          <label class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-lowest border border-secondary-container/20 hover:bg-surface-container/50 cursor-pointer transition-colors group">
-            <div class="flex items-center gap-2.5">
-              <input type="checkbox" onchange="toggleIngredientCheck(this)" class="w-4 h-4 rounded text-primary focus:ring-primary-container border-outline-variant">
-              <span class="text-sm text-on-surface group-has-[:checked]:line-through group-has-[:checked]:opacity-50 transition-all">${ing.name}</span>
+
+      if (activeRecipe.ingredientGroups && activeRecipe.ingredientGroups.length > 0) {
+        ingredientsContainer.className = "flex flex-col gap-4 bg-surface-container-low/50 p-4 rounded-2xl border border-secondary-container/20";
+        ingredientsContainer.innerHTML = activeRecipe.ingredientGroups.map(group => `
+          <div class="flex flex-col gap-2">
+            <h5 class="text-xs font-bold text-primary border-b border-surface-container-high pb-1 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span> ${group.title || '主要食材'}
+            </h5>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              ${(group.items || []).map(ing => {
+                const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
+                return `
+                  <label class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-lowest border border-secondary-container/20 hover:bg-surface-container/50 cursor-pointer transition-colors group">
+                    <div class="flex items-center gap-2.5">
+                      <input type="checkbox" onchange="toggleIngredientCheck(this)" class="w-4 h-4 rounded text-primary focus:ring-primary-container border-outline-variant">
+                      <span class="text-sm text-on-surface group-has-[:checked]:line-through group-has-[:checked]:opacity-50 transition-all">${ing.name}</span>
+                    </div>
+                    <span class="text-xs text-primary font-bold bg-primary-container/30 px-2 py-0.5 rounded-md">${scaledAmount}</span>
+                  </label>
+                `;
+              }).join('')}
             </div>
-            <span class="text-xs text-primary font-bold bg-primary-container/30 px-2 py-0.5 rounded-md">${scaledAmount}</span>
-          </label>
-        `;
-      }).join('');
+          </div>
+        `).join('');
+      } else {
+        ingredientsContainer.className = "grid grid-cols-1 md:grid-cols-2 gap-2 bg-surface-container-low/50 p-4 rounded-2xl border border-secondary-container/20";
+        ingredientsContainer.innerHTML = (activeRecipe.ingredients || []).map(ing => {
+          const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
+          return `
+            <label class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-lowest border border-secondary-container/20 hover:bg-surface-container/50 cursor-pointer transition-colors group">
+              <div class="flex items-center gap-2.5">
+                <input type="checkbox" onchange="toggleIngredientCheck(this)" class="w-4 h-4 rounded text-primary focus:ring-primary-container border-outline-variant">
+                <span class="text-sm text-on-surface group-has-[:checked]:line-through group-has-[:checked]:opacity-50 transition-all">${ing.name}</span>
+              </div>
+              <span class="text-xs text-primary font-bold bg-primary-container/30 px-2 py-0.5 rounded-md">${scaledAmount}</span>
+            </label>
+          `;
+        }).join('');
+      }
     }
 
     function scaleQuantityString(amountStr, factor) {
@@ -1526,7 +1557,6 @@
       `).join('');
     }
 
-    // 筆記寫入 Firebase
     async function saveRecipeNote() {
       if (!activeRecipe) return;
       const input = document.getElementById("new-note-input");
@@ -1561,7 +1591,6 @@
       renderNotesForActiveRecipe();
     }
 
-    // 筆記刪除同步 Firebase
     async function deleteRecipeNote(index) {
       if (!activeRecipe || !recipeNotes[activeRecipe.id]) return;
       
@@ -1570,10 +1599,8 @@
         delete recipeNotes[activeRecipe.id];
       }
 
-      // 1. 本地快取
       localStorage.setItem("warm_kitchen_notes", JSON.stringify(recipeNotes));
 
-      // 2. 關鍵位置：同步更新 Firebase 上的筆記資料（修復 updatedNotes 變數定義問題）
       if (isFirebaseConnected && recipesRef) {
         try {
           const updatedNotes = recipeNotes[activeRecipe.id] || null;
@@ -1585,7 +1612,7 @@
 
       renderNotesForActiveRecipe();
     }
-    
+
     function closeModal() {
       document.getElementById("recipe-modal").classList.add("hidden");
       document.getElementById("recipe-modal").classList.remove("flex");
@@ -1650,13 +1677,9 @@
 
     function startHandsFreeMode() {
       if (!activeRecipe) return;
-      
-      // 點擊事件中順便預先啟用音訊，確保 Safari / iOS 聲音不會被擋
       getAudioContext();
 
       currentHandsFreeStep = 0;
-      
-      // 👈 每次進入煮飯模式，計時歸零為 00:00
       timerSeconds = 0;
       updateTimerDisplay();
 
@@ -1694,11 +1717,9 @@
         <span class="w-2.5 h-2.5 rounded-full transition-all shrink-0 ${idx === currentHandsFreeStep ? 'bg-primary w-6' : 'bg-surface-container-high'}"></span>
       `).join('');
 
-      // 同步載入食譜對照抽屜內容
       renderHandsFreeDrawerContent();
     }
 
-    // 切換食譜對照抽屜開關
     function toggleHandsFreeRecipeDrawer() {
       const drawer = document.getElementById("hf-recipe-drawer");
       if (drawer.classList.contains("hidden")) {
@@ -1710,25 +1731,44 @@
       }
     }
 
-    // 渲染對照抽屜內容
     function renderHandsFreeDrawerContent() {
       if (!activeRecipe) return;
 
-      // 1. 食材列表（根據目前份量換算）
       const baseServings = activeRecipe.servings || 2;
       const scaleFactor = currentPortion / baseServings;
       const ingContainer = document.getElementById("hf-drawer-ingredients");
-      ingContainer.innerHTML = (activeRecipe.ingredients || []).map(ing => {
-        const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
-        return `
-          <div class="flex justify-between p-2 rounded-lg bg-surface-container-lowest border border-secondary-container/20">
-            <span class="font-medium text-on-surface">${ing.name}</span>
-            <span class="font-bold text-primary">${scaledAmount}</span>
-          </div>
-        `;
-      }).join('');
 
-      // 2. 全步驟列表（高亮目前正在進行的步驟）
+      if (activeRecipe.ingredientGroups && activeRecipe.ingredientGroups.length > 0) {
+        ingContainer.className = "flex flex-col gap-3 text-xs";
+        ingContainer.innerHTML = activeRecipe.ingredientGroups.map(group => `
+          <div class="flex flex-col gap-1.5">
+            <span class="font-bold text-primary border-b border-surface-container-high pb-0.5">${group.title || '主要食材'}</span>
+            <div class="grid grid-cols-2 gap-1.5">
+              ${(group.items || []).map(ing => {
+                const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
+                return `
+                  <div class="flex justify-between p-1.5 rounded-lg bg-surface-container-lowest border border-secondary-container/20">
+                    <span class="font-medium text-on-surface">${ing.name}</span>
+                    <span class="font-bold text-primary">${scaledAmount}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `).join('');
+      } else {
+        ingContainer.className = "grid grid-cols-2 gap-2 text-xs";
+        ingContainer.innerHTML = (activeRecipe.ingredients || []).map(ing => {
+          const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
+          return `
+            <div class="flex justify-between p-2 rounded-lg bg-surface-container-lowest border border-secondary-container/20">
+              <span class="font-medium text-on-surface">${ing.name}</span>
+              <span class="font-bold text-primary">${scaledAmount}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
       const stepsContainer = document.getElementById("hf-drawer-steps");
       stepsContainer.innerHTML = (activeRecipe.steps || []).map((step, idx) => {
         const isCurrent = idx === currentHandsFreeStep;
@@ -1740,7 +1780,7 @@
         `;
       }).join('');
     }
-    
+
     function nextStep() {
       if (currentHandsFreeStep < activeRecipe.steps.length - 1) {
         currentHandsFreeStep++;
@@ -1788,9 +1828,7 @@
             isTimerRunning = false;
             btn.innerText = "開始";
             
-            // 1. 響 10 秒鬧鐘
             playChimeSound();
-            // 2. 彈出不卡死聲音嘅懸浮提示框
             showTimerToast("⏰ 叮！烹飪計時結束。");
           }
         }, 1000);
@@ -1801,7 +1839,7 @@
       stopAlarmAndToast();
       clearInterval(timerInterval);
       isTimerRunning = false;
-      timerSeconds = 0; // 👈 重置為 00:00
+      timerSeconds = 0;
       updateTimerDisplay();
       document.getElementById("timer-toggle-btn").innerText = "開始";
     }
@@ -1880,6 +1918,9 @@
       document.getElementById("form-modal-title").innerHTML = '<span class="material-symbols-outlined">add_circle</span> 新增陳家食譜';
       document.getElementById("add-recipe-form").reset();
       
+      document.getElementById("ingredient-groups-container").innerHTML = "";
+      addIngredientGroup("主要食材", "");
+
       uploadedImageBase64 = "";
       document.getElementById("image-preview").src = "";
       document.getElementById("image-preview").classList.add("hidden");
@@ -1903,8 +1944,19 @@
       document.getElementById("add-time").value = activeRecipe.time;
       document.getElementById("add-servings").value = activeRecipe.servings || 2;
 
-      const ingText = (activeRecipe.ingredients || []).map(i => `${i.name} ${i.amount}`).join('\n');
-      document.getElementById("add-ingredients").value = ingText;
+      const container = document.getElementById("ingredient-groups-container");
+      container.innerHTML = "";
+
+      if (activeRecipe.ingredientGroups && activeRecipe.ingredientGroups.length > 0) {
+        activeRecipe.ingredientGroups.forEach(g => {
+          const content = (g.items || []).map(i => `${i.name} ${i.amount}`).join(', ');
+          addIngredientGroup(g.title || "", content);
+        });
+      } else {
+        const content = (activeRecipe.ingredients || []).map(i => `${i.name} ${i.amount}`).join(', ');
+        addIngredientGroup("主要食材", content);
+      }
+
       document.getElementById("add-steps").value = (activeRecipe.steps || []).join('\n');
 
       uploadedImageBase64 = activeRecipe.image || "";
@@ -1968,18 +2020,34 @@
       const difficulty = document.getElementById("add-difficulty").value;
       const time = parseInt(document.getElementById("add-time").value) || 15;
       const servings = parseInt(document.getElementById("add-servings").value) || 2;
-      
-      const rawIngs = document.getElementById("add-ingredients").value.split(/,|\n/);
-      const rawSteps = document.getElementById("add-steps").value.split(/\n/);
 
-      const ingredients = rawIngs.map(i => i.trim()).filter(Boolean).map(i => {
-        const parts = i.split(/\s+/);
-        if (parts.length >= 2) {
-          return { name: parts[0], amount: parts.slice(1).join(' ') };
+      const groupElements = document.querySelectorAll(".ing-group-item");
+      const ingredientGroups = [];
+      let allIngredientsFlat = [];
+
+      groupElements.forEach(groupEl => {
+        const groupTitle = groupEl.querySelector(".ing-group-title").value.trim();
+        const groupContent = groupEl.querySelector(".ing-group-content").value.trim();
+
+        const rawIngs = groupContent.split(/,|\n/);
+        const items = rawIngs.map(i => i.trim()).filter(Boolean).map(i => {
+          const parts = i.split(/\s+/);
+          if (parts.length >= 2) {
+            return { name: parts[0], amount: parts.slice(1).join(' ') };
+          }
+          return { name: i, amount: "適量" };
+        });
+
+        if (items.length > 0) {
+          ingredientGroups.push({
+            title: groupTitle || "主要食材",
+            items: items
+          });
+          allIngredientsFlat = allIngredientsFlat.concat(items);
         }
-        return { name: i, amount: "適量" };
       });
 
+      const rawSteps = document.getElementById("add-steps").value.split(/\n/);
       const steps = rawSteps.map(s => s.trim()).filter(Boolean);
       const defaultImg = "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80";
 
@@ -2006,7 +2074,8 @@
         likes: editId ? (recipes.find(r => r.id === editId)?.likes || 1) : 1,
         servings,
         image: finalImage,
-        ingredients: ingredients.length ? ingredients : [{ name: "新鮮食材", amount: "適量" }],
+        ingredientGroups: ingredientGroups,
+        ingredients: allIngredientsFlat,
         steps: steps.length ? steps : ["按照食材備料並開火烹煮至熟透。"]
       };
 
@@ -2023,7 +2092,6 @@
         alert(editId ? "✏️ 成功修改食譜！" : "🎉 成功新增食譜！");
         closeAddModal();
         renderRecipes();
-        
         document.getElementById("add-recipe-form").reset();
         uploadedImageBase64 = "";
       } catch (err) {
@@ -2038,15 +2106,31 @@
       const baseServings = activeRecipe.servings || 2;
       const scaleFactor = currentPortion / baseServings;
 
-      const ingredientsHtml = (activeRecipe.ingredients || []).map(ing => {
-        const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
-        return `
-          <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: #f6f2ec; border-radius: 8px; font-size: 14px;">
-            <span style="color: #2a242c; font-weight: 500;">${ing.name}</span>
-            <span style="color: #685369; font-weight: bold;">${scaledAmount}</span>
-          </div>
-        `;
-      }).join('');
+      let ingredientsHtml = "";
+      if (activeRecipe.ingredientGroups && activeRecipe.ingredientGroups.length > 0) {
+        ingredientsHtml = activeRecipe.ingredientGroups.map(g => `
+          <div style="grid-column: 1 / -1; font-weight: bold; color: #685369; font-size: 13px; margin-top: 6px; border-bottom: 1px solid #cfc5d1; padding-bottom: 2px;">${g.title || '主要食材'}</div>
+          ${(g.items || []).map(ing => {
+            const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
+            return `
+              <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: #f6f2ec; border-radius: 8px; font-size: 14px;">
+                <span style="color: #2a242c; font-weight: 500;">${ing.name}</span>
+                <span style="color: #685369; font-weight: bold;">${scaledAmount}</span>
+              </div>
+            `;
+          }).join('')}
+        `).join('');
+      } else {
+        ingredientsHtml = (activeRecipe.ingredients || []).map(ing => {
+          const scaledAmount = scaleQuantityString(ing.amount, scaleFactor);
+          return `
+            <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: #f6f2ec; border-radius: 8px; font-size: 14px;">
+              <span style="color: #2a242c; font-weight: 500;">${ing.name}</span>
+              <span style="color: #685369; font-weight: bold;">${scaledAmount}</span>
+            </div>
+          `;
+        }).join('');
+      }
 
       const stepsHtml = (activeRecipe.steps || []).map((step, idx) => `
         <div style="display: flex; gap: 12px; padding: 12px; background: #f6f2ec; border-radius: 12px; align-items: flex-start;">
