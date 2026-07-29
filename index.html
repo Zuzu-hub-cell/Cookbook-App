@@ -945,7 +945,9 @@
             </div>
 
             <div class="absolute bottom-0 left-0 w-full p-3.5 text-white">
-              <h2 class="font-bold text-sm md:text-lg mb-1 text-shadow tracking-tight line-clamp-1">${r.title}</h2>
+              <h2 class="font-bold text-sm md:text-base leading-tight mb-1 text-shadow tracking-tight line-clamp-2 drop-shadow-md">
+  ${r.title}
+</h2>
               <div class="flex items-center gap-1.5 text-[11px] opacity-90 font-medium mt-1 flex-wrap">
                 <span class="bg-black/30 backdrop-blur-xs px-2 py-0.5 rounded-full">⏱ ${r.time}分</span>
                 <span class="bg-black/30 backdrop-blur-xs px-2 py-0.5 rounded-full">${r.difficulty || '簡單'}</span>
@@ -1199,15 +1201,15 @@
     }
 
     function classifyIngredientCategory(name) {
-      const vegKeywords = ["西蘭花", "菜", "番薯", "牛油果", "生菜", "翠玉瓜", "燈籠椒", "番茄", "蒜", "洋蔥", "檸檬", "薑", "蔥", "菇", "蘿蔔", "菜心", "芥蘭", "菠菜", "黃芽白", "金菇", "矮瓜", "節瓜", "青瓜", "薯仔", "粟米", "豆苗", "芫荽"];
-      const meatKeywords = ["雞", "豬", "牛", "牛肉", "牛腩", "牛扒", "牛柳", "魚", "蝦", "肉", "翼", "鱸", "鯛", "三文魚", "蟹", "蜆", "鴨", "鵝", "羊", "魷魚", "帶子", "墨魚", "鮑魚", "腩", "排骨"];
-      const seasoningKeywords = ["油", "鹽", "糖", "生抽", "老抽", "豉油", "蠔油", "麻油", "米酒", "白酒", "醋", "胡椒", "香草", "蜜糖", "牛油", "忌廉", "芝麻", "粟粉", "豆豉", "辣椒", "八角", "九層塔"];
+  const vegKeywords = ["西蘭花", "菜", "番薯", "牛油果", "生菜", "翠玉瓜", "燈籠椒", "番茄", "蒜", "洋蔥", "檸檬", "薑", "蔥", "菇", "蘿蔔", "菜心", "芥蘭", "菠菜", "黃芽白", "金菇", "矮瓜", "節瓜", "青瓜", "薯仔", "粟米", "豆苗", "芫荽", "昆布"];
+  const meatKeywords = ["雞", "豬", "牛", "牛肉", "牛腩", "牛扒", "牛柳", "魚", "蝦", "肉", "翼", "鱸", "鯛", "三文魚", "吞拿魚", "蟹", "蜆", "鴨", "鵝", "羊", "魷魚", "帶子", "墨魚", "鮑魚", "腩", "排骨", "煙肉"];
+  const seasoningKeywords = ["油", "鹽", "糖", "生抽", "老抽", "豉油", "蠔油", "麻油", "米酒", "白酒", "醋", "胡椒", "香草", "蜜糖", "牛油", "忌廉", "芝麻", "粟粉", "豆豉", "辣椒", "八角", "九層塔", "伯爵茶", "檸檬"];
 
-      if (vegKeywords.some(k => name.includes(k))) return "veg";
-      if (seasoningKeywords.some(k => name.includes(k))) return "seasoning";
-      if (meatKeywords.some(k => name.includes(k))) return "meat"; 
-      return "staple";
-    }
+  if (vegKeywords.some(k => name.includes(k))) return "veg";
+  if (seasoningKeywords.some(k => name.includes(k))) return "seasoning";
+  if (meatKeywords.some(k => name.includes(k))) return "meat"; 
+  return "staple";
+}
 
     function addCustomShoppingItem() {
       const input = document.getElementById("custom-item-input");
